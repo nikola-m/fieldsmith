@@ -1,0 +1,46 @@
+\section{Discussion}
+\label{sec:discussion}
+
+\subsection{Limitations}
+\label{sec:limits}
+
+We list the limitations of the current version as precisely as we can; each is documented in the repository and, where possible, enforced by an explicit error.
+
+\begin{description}[leftmargin=1.2em]
+\item[Component-based cost.] Because tensors are stored by components and SymPy simplifies the resulting expressions, the cost grows with the spacetime dimension $d$ and the dimension of the gauge group. $\mathrm{SU}(2)$ and electroweak calculations take seconds to tens of seconds; the $\mathrm{SU}(3)$ Lagrangian has $1650$ terms--construction and the Bianchi identity are feasible (the whole Yang--Mills example runs in under a minute) but heavier analyses will be slow; $\mathrm{SU}(N)$ with $N\ge4$ is impractical.
+\item[Classical, commuting fields.] The Dirac field is a classical commuting spinor. No Grassmann variables, hence no classical analysis of fermionic symmetries such as supersymmetry, and no ghosts.
+\item[Canonical module.] The Hamiltonian module requires at most first derivatives in time and Lagrangians that are (at most) quadratic in velocities with an algebraically invertible Hessian. Higher-derivative theories (Podolsky) can be studied at the level of field equations, Noether currents and dispersion, but not canonically; the Ostrogradsky construction is not implemented. Born--Infeld-type Lagrangians are refused. The Dirac--Bergmann implementation is heuristic in two respects: the weak equality is imposed by pivoting on a momentum derivative, and the classification into first and second class uses non-vanishing brackets modulo total derivatives; it is validated on the textbook cases in this paper but is not a general-purpose constraint solver.
+\item[Hilbert tensor.] The metric variation is first-order about flat space, takes the Lagrangian as a string and supports bosonic fields only (no tetrad).
+\item[Gravity.] Curvature tensors, covariant derivatives and the Einstein tensor are provided for a given metric, but the metric is not dynamical: there is no Einstein--Hilbert variation and no linearised-gravity module.
+\item[Noether currents on curved backgrounds.] The Noether module is validated in flat spacetime. On curved backgrounds the identity uses the density $\sqrt{|g|}$ but symmetries must be supplied as explicit variations (Killing vectors are not computed).
+\item[Gauge fixing and BRST.] There is no gauge-fixing, ghost, or BRST machinery; gauge fixing terms may be added by hand to the Lagrangian.
+\item[Parser.] No \verb|\sum| or \verb|\int|; derivative operators act on the next postfix term; numeric adjoint indices are $1$-based whereas spacetime numerics are $0$-based; gamma matrices exist for the $4$D Dirac representation only. Some \LaTeX{} constructs (e.g.\ \verb|\left|, \verb|\right|, \verb|\text|) are silently dropped.
+\item[Dispersion analysis.] The gcd-of-minors method yields the divisorial part of the rank-drop locus and depends on coefficients being constant at the wave-vector of interest; non-constant backgrounds require an explicit local treatment.
+\end{description}
+
+\subsection{Related software}
+\label{sec:related}
+
+Computer algebra for field theory is a mature area; we describe where \fs{} sits.
+\begin{itemize}
+\item \textbf{General symbolic tensor algebra.} \textsc{xAct} (\textsc{Mathematica}) and \textsc{Cadabra} \cite{Peeters2007} provide abstract-index tensor canonicalisation and manipulation, and are the tools of choice for large tensor calculations such as higher-order perturbation theory in general relativity. SymPy itself offers \code{sympy.tensor} and \code{sympy.diffgeom}. \fs{} works with explicit components instead of abstract indices; this makes it less scalable but removes the need for a canonicaliser and gives a direct handle on every number.
+\item \textbf{Amplitude and loop calculations.} \textsc{FORM} \cite{Vermaseren2000} and \textsc{FeynCalc} \cite{Mertig1991,Shtabovenko2016} excel at Dirac and colour algebra for Feynman diagrams. \fs{} does not compute amplitudes.
+\item \textbf{Variational calculus.} SymPy provides \code{euler\_equations}, which \fs{} uses; the novelty here is the surrounding structure (index notation, Noether, constraints, gauge theory) and the \LaTeX{} front end.
+\item \textbf{Teaching tools.} Computer-algebra worksheets for classical field theory exist in individual courses; to our knowledge, there is no open-source package that combines a \LaTeX{}-index interface, a verified Noether/Dirac pipeline and an auto-grader.
+\end{itemize}
+We emphasise that these tools are complementary: for example, a result derived in \fs{} for a small gauge group can be cross-checked in \textsc{xAct} at the level of abstract expressions.
+
+\subsection{Future directions}
+
+The following extensions seem natural and are of increasing difficulty:
+(i) a more complete \LaTeX{} grammar (explicit sums and integrals, bracketed indices, \verb|\mathcal|, \verb|\bm|); (ii) a unified treatment of non-abelian vector theories with Chern--Simons terms and Wilson lines; (iii) an Ostrogradsky module with automatic recognition of ghost modes for higher-derivative actions; (iv) dynamical gravity: linearised Einstein--Hilbert, the Fierz--Pauli theory and its degree-of-freedom analysis, and eventually the ADM decomposition; (v) a Grassmann extension for fermionic symmetry analysis; (vi) a BRST module; (vii) differential forms in place of components, which would make Chern--Simons and Wess--Zumino terms natural; (viii) performance work, including component sparsity, caching of expansions and optional use of a faster back-end. Contributions are welcome.
+
+\subsection{Conclusion}
+
+We have presented \fs{}, a compact library that turns a \LaTeX{} Lagrangian into verified classical field theory: equations of motion, symmetries, stress tensors, constraint analysis, spectra and gauge-theoretic data. We described its theoretical underpinnings, its implementation and the checks that guard it, and we illustrated its use on eighteen examples that run from the Klein--Gordon field to the 't~Hooft--Polyakov monopole. The documentation, the examples and this paper together aim at a single purpose: to make it easy to derive existing theory and to explore new theory with confidence that the algebra is right. The physics in the examples is standard; the contribution is a tool that makes it reproducible, inspectable and quick to modify.
+
+\section*{Acknowledgements}
+The author thanks Konstantin V. Stepanyants (Moscow State University) whose extensive academic lectures and educational video series inspired the creation of the library. The library builds on \textsc{SymPy} and its community.
+
+\section*{Code and data availability}
+The source code, examples, tests and documentation are available at \url{https://github.com/nikola-m/fieldsmith} under the MIT licence. All numbers in this paper can be regenerated with the scripts described in \cref{app:repro}.

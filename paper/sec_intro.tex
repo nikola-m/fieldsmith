@@ -1,0 +1,41 @@
+\section{Introduction}
+\label{sec:intro}
+
+Classical field theory is the language in which most of modern fundamental physics is written. Electromagnetism, the Klein--Gordon and Dirac fields, Yang--Mills theory, the Higgs mechanism, topological solitons and the coupling of matter to gravity are all introduced, in the first instance, as \emph{classical} field theories: a Lagrangian density, an action principle, and a set of consequences obtained by calculation. The calculations are routine in principle and tedious in practice. Varying a Yang--Mills action with matter, verifying that a given Noether current is conserved, counting the physical degrees of freedom of a massive vector field, or checking that a proposed instanton satisfies the field equations involves long chains of index manipulation in which a single sign error silently invalidates everything downstream.
+
+Computer algebra has long been used for such work, but the tools that exist target neighbouring problems. General-purpose computer algebra systems provide the calculus but not the field-theoretic structure. Dedicated tensor systems such as \textsc{xAct} for \textsc{Mathematica} and \textsc{Cadabra} \cite{Peeters2007} are powerful for canonicalising tensor polynomials and for general relativity; \textsc{FORM} \cite{Vermaseren2000} and \textsc{FeynCalc} \cite{Mertig1991,Shtabovenko2016} are built for the algebra of perturbative amplitudes. What we found missing is a tool that sits at the level at which a graduate course in classical field theory is taught: a student or teacher writes down a Lagrangian, asks the questions that the course asks of it, and gets answers that are \emph{checked}. The present work describes such a tool.
+
+\subsection{The \fs{} workflow}
+
+\fs{} is a Python library, built on \textsc{SymPy} \cite{Meurer2017}, with the following workflow.
+\begin{enumerate}[nosep]
+\item The user declares fields, parameters and the spacetime, and writes the Lagrangian density as a \LaTeX{} string in index notation, e.g.\ \verb|-\frac14 F^a_{\mu\nu}F^{a\mu\nu}|.
+\item A parser expands the string into explicit expressions in the coordinate components, summing over repeated indices, applying derivative and covariant-derivative operators, and inserting metric, Levi-Civita and Lie-algebra structure constants where required.
+\item Analysis routines then operate on the resulting action: field equations, symmetries and conserved currents, energy--momentum tensors, canonical structure and constraints, linearised spectra, and gauge-theoretic data such as vector-boson mass matrices.
+\item Because results are explicit expressions, \emph{any} claim can be tested: an identity written in \LaTeX{} is verified, a candidate solution is substituted into the field equations, and a component-level result is re-expressed in covariant index notation by solving a small linear problem.
+\end{enumerate}
+A minimal session already shows the flavour. For the electromagnetic field:
+\lstinputlisting{snippets/s03_maxwell.py}
+The output confirms that the field equation is $\pd_\mu F^{\mu\nu}=0$ (with unit coefficient), that $\pd_\nu\pd_\mu F^{\mu\nu}\equiv 0$ and that the dual field strength is divergence-free, and it reports two first-class constraints and two physical degrees of freedom per spatial point. Each statement has been established by exact symbolic computation on the components of $A_\mu$.
+
+\subsection{Contributions and scope}
+
+The main contributions are the following.
+\begin{itemize}[nosep]
+\item A \emph{LaTeX-first interface} to classical field theory: index notation with Einstein summation, derivative operators with explicit scoping rules, conjugation, accents, gamma matrices, covariant derivatives, and operator-valued expressions such as $(\ii\gamma^\mu D_\mu-m)\psi$ (\cref{sec:parser}).
+\item A \emph{complete derivation pipeline} from action to spectrum: Euler--Lagrange equations of any derivative order; Noether currents for arbitrary continuous symmetries, including spacetime symmetries with boundary terms, together with the Noether identity as an independent check; canonical and Hilbert energy--momentum tensors; a Dirac--Bergmann analysis; and plane-wave dispersion analysis that handles gauge null directions (\cref{sec:framework,sec:impl}).
+\item A \emph{gauge-theory module} for $\mathrm{SU}(N)$ and $\mathrm U(1)$ factors, matter multiplets and spinors, with field strengths, covariant derivatives on arbitrary representations, local gauge variations and mass matrices (\cref{sec:gauge-impl}).
+\item A \emph{translation from components back to covariant notation} (\code{fit}), which makes the output readable and doubles as a decision procedure for statements of the form ``this tensor equals a combination of these covariant building blocks'' (\cref{sec:fit}).
+\item A \emph{teaching toolkit} that grades submitted field equations, identities and currents, tolerant of equivalent forms but not of wrong ones (\cref{sec:grading}).
+\item Eighteen \emph{self-checking worked examples} (\cref{part:examples}) covering the standard curriculum and several research-level topics. Each is both a documented derivation and a regression test.
+\end{itemize}
+
+The scope is deliberately \emph{classical}: fields are commuting functions on spacetime. Quantum questions enter only through classical precursors (degree-of-freedom counts, mass spectra, constraint structure). Section~\ref{sec:limits} lists what the library does not do.
+
+\subsection{Organisation of this document}
+
+\Cref{sec:intent} states the intent and design principles. \Cref{sec:usecases} describes the use cases we had in mind: teaching, assessment, exploration and research prototyping. \Cref{sec:framework} summarises the theoretical framework that the library implements, so that the document is self-contained. \Cref{sec:impl} describes the implementation in detail. \Cref{part:examples} then works through eighteen examples one by one. For each we give the physical background---which, taken together, forms a concise introduction to classical field and gauge theory---followed by the code, the output produced by the library, and an interpretation. \Cref{sec:discussion} discusses limitations, related software and future directions. The appendices collect conventions, the \LaTeX{} grammar, a compact API summary, and instructions for reproducing every number quoted here.
+
+\subsection{Notation and conventions}
+
+Unless stated otherwise we use natural units $\hbar=c=1$, the metric signature $(+,-,-,-)$, $\epsilon^{0123}=+1$, and Greek indices running over spacetime. The gauge conventions follow Peskin and Schroeder \cite{PeskinSchroeder}: $D_\mu=\pd_\mu-\ii g A_\mu^aT^a$ and $F^a_{\mu\nu}=\pd_\mu A_\nu^a-\pd_\nu A_\mu^a+gf^{abc}A_\mu^bA_\nu^c$. \Cref{app:conventions} lists everything, including the points at which the library's numbering differs from the physicist's (spacetime components are $0$-based; adjoint indices are $1$-based).

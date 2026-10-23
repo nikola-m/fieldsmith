@@ -1,0 +1,147 @@
+\subsection{Towards the research frontier}
+\label{sec:frontier}
+
+The remaining examples show how the same machinery handles theories that are not in standard textbooks or that probe current research topics. In each case the point is that a modification of a known Lagrangian can be explored in a few lines.
+
+\exheading{ex:axion}{Axion electrodynamics and topological terms}{12\_axion\_electrodynamics.py}{research-flavoured}
+
+\paragraph{Background.} Pseudoscalar (``axion-like'') fields $a$ couple to photons through the topological density $F_{\mu\nu}\dual F^{\mu\nu}$ \cite{Wilczek1987,CarrollFieldJackiw1990}:
+\begin{equation}
+\mathcal L=-\tfrac14F_{\mu\nu}F^{\mu\nu}+\tfrac12\pd_\mu a\,\pd^\mu a-\tfrac12m_a^2a^2-\tfrac g4\,a\,F_{\mu\nu}\dual F^{\mu\nu}.
+\end{equation}
+With $\epsilon^{0123}=+1$ one has $F_{\mu\nu}\dual F^{\mu\nu}=-4\,\vect E\!\cdot\!\vect B$, so the interaction is $g\,a\,\vect E\!\cdot\!\vect B$. The density is a total derivative, $F\dual F=\pd_\mu K^\mu$ with the Chern--Simons current $K^\mu=2\epsilon^{\mu\nu\rho\sigma}A_\nu\pd_\rho A_\sigma$; consequently, for a \emph{constant} $a$ the coupling has no effect on the equations of motion. The EL equations are
+\begin{equation}
+\pd_\mu F^{\mu\nu}+g\,\pd_\mu a\,\dual F^{\mu\nu}=0,\qquad(\Box+m_a^2)\,a=-\tfrac g4F_{\mu\nu}\dual F^{\mu\nu}=g\,\vect E\!\cdot\!\vect B,
+\end{equation}
+where we used $\pd_\mu\dual F^{\mu\nu}=0$. For a slowly rolling background $\pd_t a=\kappa$ the photon equation becomes $\pd_\mu F^{\mu\nu}+g\kappa\,\dual F^{0\nu}=0$, which is parity-violating: the two circular polarisations obey different dispersion relations,
+\begin{equation}
+\omega^2=k^2\pm g\kappa k,
+\end{equation}
+so that the plane of linear polarisation rotates by $\Delta\theta=\tfrac12g\,\Delta a$ after propagation---\emph{cosmic birefringence}, a signature searched for in the cosmic microwave background.
+
+In the library:
+\lstinputlisting{snippets/s12_axion.py}
+
+\paragraph{Results.} \code{fit} returns $\{\texttt{dF}:1,\ \texttt{ax}:g\}$ for the photon equation, and the identity $F\dual F=\pd_\mu(2\epsilon^{\mu\nu\rho\sigma}A_\nu\pd_\rho A_\sigma)$ is verified; the example also checks $F\dual F=-4\vect E\!\cdot\!\vect B$ and the axion equation. The $2\times2$ transverse plane-wave matrix for a wave along $z$ in the background $a=\kappa t$ is $\begin{pmatrix}\omega^2-k_z^2&-\ii g\kappa k_z\\ \ii g\kappa k_z&\omega^2-k_z^2\end{pmatrix}$ with determinant $-(g\kappa k_z-k_z^2+\omega^2)(g\kappa k_z+k_z^2-\omega^2)$, hence $\omega^2=k_z^2\pm g\kappa k_z$.
+
+\paragraph{Extension.} Add a background magnetic field and compute the photon--axion mixing matrix, the basis of laboratory axion searches.
+
+\exheading{ex:eh}{Nonlinear electrodynamics: vacuum birefringence}{13\_vacuum\_birefringence.py}{research-flavoured}
+
+\paragraph{Background.} Quantum corrections from virtual electron--positron pairs make the vacuum nonlinear. At energies far below $m_e$ they are summarised by the Euler--Heisenberg effective Lagrangian \cite{EulerHeisenberg1936}; its weak-field expansion is
+\begin{equation}
+\mathcal L=\tfrac12(\vect E^2-\vect B^2)+\frac{2\alpha^2}{45m_e^4}\Big[(\vect E^2-\vect B^2)^2+7(\vect E\!\cdot\!\vect B)^2\Big].
+\end{equation}
+Using $F^2=-2(\vect E^2-\vect B^2)$ and $F\dual F=-4\vect E\!\cdot\!\vect B$ this is of the form $\mathcal L=-\tfrac14F^2+c_1(F^2)^2+c_2(F\dual F)^2$ with $c_1=\tfrac{\alpha^2}{90m_e^4}$ and $c_2=\tfrac{7\alpha^2}{360m_e^4}$. Light propagating through a uniform magnetic field $\vect B_0$ is therefore birefringent: the two linear polarisations have different refractive indices \cite{BialynickaBirula1970,Adler1971}. In general, linearising about $\vect B_0$ and propagating perpendicular to it, a photon with $\vect E\perp\vect B_0$ and one with $\vect E\parallel\vect B_0$ have
+\begin{equation}
+n_\perp-1=16\,c_1B_0^2,\qquad n_\parallel-1=16\,c_2B_0^2.
+\end{equation}
+With the Euler--Heisenberg coefficients, $n_\perp-1=\frac{8\alpha^2B_0^2}{45m_e^4}$ and $n_\parallel-1=\frac{14\alpha^2B_0^2}{45m_e^4}$, a ratio of $7/4$ that is independent of $B_0$. In terms of the critical field $B_{\mathrm{cr}}=m_e^2/e$ this is $n-1=\frac{\alpha}{4\pi}(B_0/B_{\mathrm{cr}})^2\times\{\frac{8}{45},\frac{14}{45}\}$.
+
+\paragraph{In the library.} The EL equations of a cubic-in-field-strength theory (348 terms in $E^0$) are linearised about the background $A_y=B_0x$.
+\lstinputlisting{snippets/s13_eh.py}
+
+\paragraph{Results.} For propagation along $y$ the two linear polarisations decouple. For $A_x$ ($\vect E\perp\vect B_0$) the dispersion equation is $(1-16c_1B_0^2)\,\omega^2-(1-48c_1B_0^2)\,k_y^2=0$, giving $n=k_y/\omega=1+16c_1B_0^2+\order{B_0^4}$; for $A_z$ ($\vect E\parallel\vect B_0$) it is $(1-16c_1B_0^2+32c_2B_0^2)\,\omega^2-(1-16c_1B_0^2)\,k_y^2=0$, giving $n=1+16c_2B_0^2+\order{B_0^4}$. Hence $n_\perp-1=16c_1B_0^2$ and $n_\parallel-1=16c_2B_0^2$. Inserting the Euler--Heisenberg coefficients, the library prints $n_\perp-1=8\alpha^2B_0^2/(45m_e^4)$, $n_\parallel-1=14\alpha^2B_0^2/(45m_e^4)$ and the ratio $7/4$ (asserted). The labelling of which polarisation is ``parallel'' is a convention, and the example asserts the ratio is $7/4$ or $4/7$.
+
+\paragraph{Extension.} Born--Infeld electrodynamics, expanded to quartic order, has $c_1=c_2=1/(32b^2)$ (with $b$ the maximal field strength). Setting $c_1=c_2$ in the result above gives $n_\perp=n_\parallel$ at this order: Born--Infeld theory is not birefringent, a property that singles it out among nonlinear electrodynamics. Verify this and explore deformations.
+
+\exheading{ex:podolsky}{Higher-derivative electrodynamics: Podolsky's theory}{14\_podolsky\_higher\_derivative.py}{research-flavoured}
+
+\paragraph{Background.} The self-energy of a point charge in Maxwell theory diverges. Podolsky \cite{Podolsky1942} proposed adding a term with second derivatives of $A_\mu$,
+\begin{equation}
+\mathcal L=-\tfrac14F_{\mu\nu}F^{\mu\nu}+\tfrac{a^2}2\,\pd^\mu F_{\mu\nu}\,\pd_\lambda F^{\lambda\nu},
+\end{equation}
+which remains gauge invariant and Lorentz invariant but has \emph{fourth-order} field equations,
+\begin{equation}
+(1+a^2\Box)\,\pd_\mu F^{\mu\nu}=J^\nu.
+\end{equation}
+Operators factorise: besides the massless photon there are massive modes with mass $1/a$. The linearised wave matrix has determinant (after removing gauge directions) $(\omega^2-\vect k^2)^2\,[\,1+a^2(\vect k^2-\omega^2)\,]^3$: two massless polarisations and three of mass $1/a$, so the theory propagates $5$ degrees of freedom \cite{HenneauxTeitelboim}. The extra modes are a hallmark of higher-derivative theories (Ostrogradsky's instability \cite{Ostrogradsky1850,Woodard2007}): they enter with a sign that is wrong for the energy, or for the norm of states in the quantum theory, so the theory is usually considered an effective one for $E\ll1/a$. The attractive feature is the Coulomb potential. For a static point charge, $(1-a^2\nabla^2)\nabla^2A_0=-q\,\delta^3(\vect x)$ (with $\Box\to-\nabla^2$), and partial fractions $\tfrac1{k^2(1+a^2k^2)}=\tfrac1{k^2}-\tfrac{a^2}{1+a^2k^2}$ give
+\begin{equation}
+A_0(r)=\frac{q}{4\pi r}\big(1-\ee^{-r/a}\big),
+\end{equation}
+which reduces to Coulomb's law for $r\gg a$ and is \emph{finite} at the origin, $A_0(0)=q/(4\pi a)$.
+
+\paragraph{In the library.} The tensor $j_\nu=\pd^\mu F_{\mu\nu}$ is defined first (it contains second derivatives of the potential), after which the Lagrangian is a one-liner. \code{euler\_lagrange} handles the fourth-order equations automatically.
+\lstinputlisting{snippets/s14_podolsky.py}
+
+\paragraph{Results.} \code{fit} returns $\{\texttt{dF}:1,\ \texttt{box}:a^2\}$, i.e.\ the field equation is $(1+a^2\Box)\pd_\mu F^{\mu\nu}$. The physical factor of the dispersion relation (\code{pdet}) is exactly $(\vect k^2-\omega^2)^2\,[a^2(\vect k^2-\omega^2)+1]^3$, with roots $\omega=\pm|\vect k|$ and $\omega=\pm\sqrt{\vect k^2+1/a^2}$. The example verifies that the profile $A_0=q(1-\ee^{-r/a})/(4\pi r)$ solves the field equations for $r>0$ and evaluates the limit $r\to0$.
+
+\paragraph{Extension.} Add a mass term and examine how the spectrum is modified; or reduce to a first-order form with auxiliary fields.
+
+\exheading{ex:cs}{Topologically massive electrodynamics in $2{+}1$ dimensions}{15\_chern\_simons\_2plus1.py}{research-flavoured}
+
+\paragraph{Background.} In three spacetime dimensions a gauge-invariant mass for the photon is possible without a Higgs field. The Chern--Simons term $\tfrac\mu4\epsilon^{\mu\nu\rho}A_\mu F_{\nu\rho}$ added to Maxwell theory \cite{DeserJackiwTempleton1982a,DeserJackiwTempleton1982b} gives
+\begin{equation}
+\mathcal L=-\tfrac14F_{\mu\nu}F^{\mu\nu}+\tfrac\mu4\epsilon^{\mu\nu\rho}A_\mu F_{\nu\rho},\qquad
+\pd_\mu F^{\mu\nu}+\tfrac\mu2\epsilon^{\nu\rho\sigma}F_{\rho\sigma}=0.
+\end{equation}
+The Chern--Simons term is \emph{not} gauge invariant but its variation is a total derivative: $\delta\mathcal L_{\mathrm{CS}}=\pd_\mu K^\mu$ with $K^\mu=\tfrac\mu4\epsilon^{\mu\nu\rho}\alpha F_{\nu\rho}$, so the action is invariant for gauge parameters that vanish at the boundary. (For non-abelian generalisations, ``large'' gauge transformations force the coefficient to be quantised \cite{DeserJackiwTempleton1982a}.) Defining $\dual F^\nu=\tfrac12\epsilon^{\nu\rho\sigma}F_{\rho\sigma}$, the equation is $\pd_\mu F^{\mu\nu}+\mu\dual F^\nu=0$, from which $(\Box+\mu^2)\dual F^\nu=0$: a single massive excitation of mass $|\mu|$ and spin $\sgn(\mu)$, with one degree of freedom (compared with one for the massless photon in $2{+}1$ dimensions, which is a scalar in disguise). Canonically, $N=3$ pairs, two first-class constraints ($\pi^0\weq0$ and a modified Gauss law $\pd_i\pi^i+\tfrac\mu2\epsilon^{ij}\pd_iA_j\weq0$ in which the magnetic flux acts as a source of electric charge), so $n_{\mathrm{dof}}=(6-4)/2=1$.
+
+In the library:
+\lstinputlisting{snippets/s15_tme.py}
+
+\paragraph{Results.} The example verifies that $\delta\mathcal L_{\mathrm{CS}}\neq0$ but $\delta\mathcal L_{\mathrm{CS}}-\pd_\mu K^\mu=0$; \code{fit} gives $\pd_\mu F^{\mu\nu}+\tfrac\mu2\epsilon^{\nu\rho\sigma}F_{\rho\sigma}$ with coefficients $\{1,\tfrac\mu2\}$; the physical dispersion factor is $\vect k^2+\mu^2-\omega^2$; and the Dirac analysis returns $3$ pairs, $2$ first-class constraints and one degree of freedom, with the secondary constraint $-\tfrac\mu2\pd_yA_1+\tfrac\mu2\pd_xA_2+\pd_x\pi^1+\pd_y\pi^2\weq0$.
+
+\paragraph{Extension.} Couple a charged scalar and show that the Gauss-law constraint attaches magnetic flux to charge, the origin of anyonic statistics.
+
+\exheading{ex:bpst}{The BPST instanton}{16\_bpst\_instanton.py}{research-flavoured}
+
+\paragraph{Background.} Instantons are finite-action solutions of the Euclidean field equations. For $\mathrm{SU}(2)$ Yang--Mills theory in four Euclidean dimensions with action $S=\tfrac14\int\dd^4x\,F^a_{\mu\nu}F^a_{\mu\nu}$, the topological charge
+\begin{equation}
+Q=\frac{g^2}{32\pi^2}\int\dd^4x\,F^a_{\mu\nu}\dual F^a_{\mu\nu}
+\end{equation}
+is an integer (the winding number of the gauge transformation at infinity), and the action obeys the Bogomolny bound \cite{BPST1975}
+\begin{equation}
+S=\tfrac18\int\big(F^a_{\mu\nu}\mp\dual F^a_{\mu\nu}\big)^2\pm\tfrac14\int F^a_{\mu\nu}\dual F^a_{\mu\nu}\ \ge\ \frac{8\pi^2}{g^2}|Q|,
+\end{equation}
+saturated by (anti-)self-dual fields $F=\pm\dual F$, which automatically satisfy $D_\mu F_{\mu\nu}=0$ by the Bianchi identity. The BPST solution in regular gauge, with size $\rho$ and centred at the origin, is
+\begin{equation}
+A^a_\mu=\frac{2\,\eta^a_{\mu\nu}x_\nu}{g(x^2+\rho^2)},\qquad
+F^a_{\mu\nu}=-\frac{4\,\eta^a_{\mu\nu}\rho^2}{g(x^2+\rho^2)^2},
+\end{equation}
+with the 't~Hooft symbols $\eta^a_{ij}=\epsilon_{aij}$, $\eta^a_{i4}=\delta_{ai}=-\eta^a_{4i}$. The action density is $\tfrac14F^2=48\rho^4/[g^2(x^2+\rho^2)^4]$ and $S=8\pi^2/g^2$, $Q=1$. Instantons describe tunnelling between topologically distinct vacua and underlie the $\theta$-vacuum and the $U(1)_A$ problem.
+
+\paragraph{In the library.} The ansatz is a dictionary from the gauge-field component functions to explicit expressions; \code{M.define} builds the dual field strength.
+\lstinputlisting{snippets/s16_bpst.py}
+
+\paragraph{Results.} The field strength computed by the library from the ansatz is self-dual (asserted), with $F^3_{12}=-4\rho^2/[g(x^2+\rho^2)^2]$ as expected; the Euclidean field equations are satisfied exactly and symbolically (asserted); the action density equals $48\rho^4/[g^2(x^2+\rho^2)^4]$; with $\int\dd^4x=2\pi^2\int s^3\dd s$ the action is $8\pi^2/g^2$, saturating the bound, and the topological charge evaluates to $Q=1$.
+
+\paragraph{Extension.} Check the anti-instanton, a two-instanton ansatz of 't~Hooft form, or the instanton in singular gauge.
+
+\exheading{ex:monopole}{The 't~Hooft--Polyakov magnetic monopole}{17\_tHooft\_Polyakov\_monopole.py}{research-flavoured}
+
+\paragraph{Background.} Consider $\mathrm{SU}(2)$ gauge theory with a Higgs field $\phi^a$ in the adjoint representation (the Georgi--Glashow model),
+\begin{equation}
+\mathcal L=-\tfrac14F^a_{\mu\nu}F^{a\mu\nu}+\tfrac12D_\mu\phi^aD^\mu\phi^a-V(\phi),
+\end{equation}
+where $V\to0$ in the BPS limit $\lambda\to0$ with $|\phi|\to v$ at infinity. The vacuum breaks $\mathrm{SU}(2)\to\mathrm U(1)$, leaving a massless photon and two $W$ bosons of mass $gv$. Because $\pi_2(\mathrm{SU}(2)/\mathrm U(1))=\pi_2(S^2)=\mathbb Z$, the theory has topologically stable, finite-energy solutions carrying magnetic charge \cite{tHooft1974,Polyakov1974}. In the hedgehog ansatz
+\begin{equation}
+\phi^a=\frac{x^a}{g\,r^2}H(gvr),\qquad A^a_i=\epsilon_{aij}\frac{x_j}{g\,r^2}\,[1-K(gvr)],\qquad A^a_0=0,
+\end{equation}
+the field equations reduce to ordinary differential equations. In the BPS limit Prasad and Sommerfield \cite{PrasadSommerfield1975} found the exact solution $K(u)=u/\sinh u$, $H(u)=u\coth u-1$. The energy $E=\int\dd^3x\,\big[\tfrac12(B^a_i)^2+\tfrac12(D_i\phi^a)^2\big]$ (with $B^a_i=-\tfrac12\epsilon_{ijk}F^a_{jk}$) obeys the Bogomolny completion
+\begin{equation}
+E=\tfrac12\int(B^a_i\mp D_i\phi^a)^2\pm\int B^a_iD_i\phi^a\ \ge\ v\,\Big|\!\oint\!B^a_i\hat\phi^a\,\dd S_i\Big|=\frac{4\pi v}{g},
+\end{equation}
+because the magnetic flux through the sphere at infinity is $4\pi/g$ (consistent with Dirac's quantisation condition for the charge $g/2$ of an $\mathrm{SU}(2)$ doublet). The solution saturates it with the first-order Bogomolny equations $B^a_i=\pm D_i\phi^a$, so the monopole mass is $M=4\pi v/g=(4\pi/g^2)M_W$. A numerical check: the library can find which sign of $A$ is a solution.
+
+\paragraph{In the library.} The profile functions are entered explicitly and the residual of the full second-order equations is evaluated at random points to $30$ significant digits.
+\lstinputlisting{snippets/s17_monopole.py}
+
+\paragraph{Results.} For the hedgehog with sign $s=+1$ the maximum residual is $\sim10^{-164}$ (zero to working precision), while for $s=-1$ it is $0.45$, so the correct orientation is identified. The Bogomolny equation $B^a_i=\pm D_i\phi^a$ is satisfied to the same precision for one sign and not for the other (residual $0.74$). The mass integral $\int\dd^3x\,\mathcal E$, evaluated by numerical quadrature of the radial energy density to $\infty$ with $g=v=1$, is $12.56637061=4\pi$.
+
+\paragraph{Extension.} Switch on $\lambda>0$ and solve the radial ODEs numerically with the library's equations as the source; compare the mass to $4\pi v/g\times f(\lambda/g^2)$ with $f(0)=1$.
+
+\exheading{ex:symmetries}{A tour of spacetime symmetries and their Noether currents}{18\_symmetries\_tour.py}{intermediate--advanced}
+
+\paragraph{Background.} Noether's theorem \cite{Noether1918} associates a conserved quantity with every continuous symmetry. The Poincar\'e group of Minkowski space gives the full set of ``mechanical'' conservation laws: translations ($T^{\mu\nu}$ and the four-momentum), rotations (angular momentum $J^{ij}=\int(x^iT^{0j}-x^jT^{0i})$) and boosts ($K^i=\int(x^iT^{00}-tT^{0i})$, whose conservation says that the centre of energy moves uniformly). Scale transformations $x\to\lambda x$, $\phi\to\lambda^{-1}\phi$ (in four dimensions) are a symmetry of massless $\phi^4$ theory; the dilatation current is $J^\mu=-(x^\nu T^\mu{}_\nu+\phi\pd^\mu\phi)$, and on shell
+\begin{equation}
+\pd_\mu J^\mu=\phi\,V'(\phi)-4V(\phi),
+\end{equation}
+which vanishes if and only if $V\propto\phi^4$. With a mass term, the divergence is $-m^2\phi^2$: scale invariance is broken by exactly the mass term. A pure shift $\phi\to\phi+c$ is a symmetry of the massless free field, with current $J^\mu=\pd^\mu\phi$; any potential breaks it and the defect is $-V'(\phi)$.
+
+\paragraph{In the library.} A symmetry is a dictionary of variations (for spacetime symmetries, the transport term $-\xi^\mu\pd_\mu\phi$) together with the boundary term $K^\mu$ that makes $\delta\mathcal L=\pd_\mu K^\mu$.
+\lstinputlisting{snippets/s18_sym.py}
+
+\paragraph{Results.} For the massive $\phi^4$ Lagrangian, all four translation currents (the rows of the canonical stress tensor), the boost along $x$, and the rotation about $z$ pass the symmetry check and satisfy the Noether identity; the boost charge density is $J^0=-(xT^{00}-tT^{01})$ (printed in components; the overall sign follows from the sign convention of the transport term) and the rotation charge is $J^0=(y\pd_x\phi-x\pd_y\phi)\dot\phi=xT^{02}-yT^{01}$. The shift current of the free massless field is $J^\mu=\pd^\mu\phi$; for the interacting theory \code{noether\_current} raises ``not a symmetry'' and reports the defect $-V'(\phi)$. The dilatation defect is $0$ for the massless quartic theory and $-m^2\phi^2$ with a mass term, as predicted.
+
+\paragraph{Extension.} Find the special conformal currents of the massless field (with the improved tensor of \cref{ex:stress}); verify that without improvement the symmetry check fails.

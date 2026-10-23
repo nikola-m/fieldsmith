@@ -1,0 +1,29 @@
+\section{Conventions}
+\label{app:conventions}
+
+\begin{table}[H]
+\centering\small
+\begin{tabular}{@{}p{4.2cm}p{10.3cm}@{}}
+\toprule
+Item & Convention \\
+\midrule
+Units & $\hbar=c=1$ \\
+Signature & $(+,-,-,-)$ by default; \code{Spacetime.minkowski(d, "mostly\_plus")} for $(-,+,\dots,+)$; \code{Spacetime.euclidean(d)} for $\delta_{\mu\nu}$ \\
+Coordinates & $x^0=t$; spacetime component indices are $0$-based \\
+Levi-Civita & $\epsilon^{0123}=+1/\sqrt{|g|}$ (so $\epsilon_{0123}=-1$ in Minkowski space); \code{Model(eps0123=-1)} flips the sign; spatial $\epsilon_{ijk}$ with $\epsilon_{123}=1$ \\
+Index kinds & Greek: spacetime. Latin $i,j,k,l,m,n$: spatial ($1,\dots,d-1$). Latin $a$--$f$: adjoint of the first gauge factor (and further families for further factors). User-defined: any letters registered with \code{add\_index\_space} \\
+Adjoint numerals & $1$-based (\verb|A^1_\mu|, \dots, \verb|A^3_\mu|) \\
+Covariant derivative & $D_\mu=\pd_\mu-\ii gA^a_\mu T^a$ on a multiplet; $D_\mu\chi^a=\pd_\mu\chi^a+gf^{abc}A^b_\mu\chi^c$ on an adjoint \\
+Field strength & $F^a_{\mu\nu}=\pd_\mu A^a_\nu-\pd_\nu A^a_\mu+gf^{abc}A^b_\mu A^c_\nu$ \\
+Gauge transformation & $\delta\phi=\ii\alpha^aT^a\phi$, $\delta A^a_\mu=g^{-1}\pd_\mu\alpha^a+f^{abc}A^b_\mu\alpha^c$ \\
+Generators & $\mathrm{SU}(N)$: generalised Gell-Mann matrices, $\tr(T^aT^b)=\tfrac12\delta^{ab}$ \\
+Electric/magnetic fields & $E_i=F_{i0}$, $B_i=\tfrac12\epsilon_{ijk}F_{jk}$ (overall sign opposite to the textbook vector fields; irrelevant for quadratic forms) \\
+Riemann tensor & MTW \cite{MTW}: $R^\rho{}_{\sigma\mu\nu}=\pd_\mu\Gamma^\rho_{\nu\sigma}-\pd_\nu\Gamma^\rho_{\mu\sigma}+\Gamma^\rho_{\mu\lambda}\Gamma^\lambda_{\nu\sigma}-\Gamma^\rho_{\nu\lambda}\Gamma^\lambda_{\mu\sigma}$ \\
+Stress tensor & Hilbert: $T_{\mu\nu}=(2/\sqrt{|g|})\,\delta(\sqrt{|g|}\mathcal L)/\delta g^{\mu\nu}$ for $(+,-,-,-)$ \\
+Complex fields & $\phi$ and $\phi^*$ independent; $\delta S/\delta\phi^*$ is the equation of motion of $\phi$ \\
+Dirac matrices & Dirac representation; $\bar\psi=\psi^\dagger\gamma^0$ \\
+EL sign & the EL expression is $\pd\mathcal L/\pd\varphi-\pd_\mu\pd\mathcal L/\pd(\pd_\mu\varphi)+\dots$ \\
+\bottomrule
+\end{tabular}
+\caption{Conventions used by the library and in this paper.}
+\end{table}

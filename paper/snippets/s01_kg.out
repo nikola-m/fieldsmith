@@ -1,0 +1,4 @@
+-m**2*phi(t, x, y, z) - Derivative(phi(t, x, y, z), (t, 2)) + Derivative(phi(t, x, y, z), (x, 2)) + Derivative(phi(t, x, y, z), (y, 2)) + Derivative(phi(t, x, y, z), (z, 2))
+[-sqrt(k_x**2 + k_y**2 + k_z**2 + m**2), sqrt(k_x**2 + k_y**2 + k_z**2 + m**2)]
+m**2*phi(t, x, y, z)**2/2 + Derivative(phi(t, x, y, z), t)**2/2 + Derivative(phi(t, x, y, z), x)**2/2 + Derivative(phi(t, x, y, z), y)**2/2 + Derivative(phi(t, x, y, z), z)**2/2
+m**2*phi(t, x, y, z)**2/2 + p[phi](t, x, y, z)**2/2 + Derivative(phi(t, x, y, z), x)**2/2 + Derivative(phi(t, x, y, z), y)**2/2 + Derivative(phi(t, x, y, z), z)**2/2

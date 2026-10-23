@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fieldsmith"
+version = "0.1.0"
+description = "Symbolic classical field theory and gauge theory from LaTeX: Euler-Lagrange, Noether, stress tensors, Yang-Mills, Higgs, canonical constraints."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+dependencies = ["sympy>=1.12", "mpmath"]
+
+[project.optional-dependencies]
+test = ["pytest"]
+
+[tool.setuptools.packages.find]
+include = ["fieldsmith*"]

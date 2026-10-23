@@ -1,0 +1,158 @@
+\contentsline {section}{\numberline {1}Introduction}{4}{section.1}%
+\contentsline {subsection}{\numberline {1.1}The \textsc {fieldsmith}{} workflow}{4}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Contributions and scope}{5}{subsection.1.2}%
+\contentsline {subsection}{\numberline {1.3}Organisation of this document}{5}{subsection.1.3}%
+\contentsline {subsection}{\numberline {1.4}Notation and conventions}{5}{subsection.1.4}%
+\contentsline {section}{\numberline {2}Intent and design principles}{5}{section.2}%
+\contentsline {paragraph}{Verify, do not pattern-match.}{6}{section*.2}%
+\contentsline {paragraph}{Write physics, not code.}{6}{section*.3}%
+\contentsline {paragraph}{Components inside, covariant outside.}{6}{section*.4}%
+\contentsline {paragraph}{A small, readable core.}{6}{section*.5}%
+\contentsline {paragraph}{Explicit limits.}{6}{section*.6}%
+\contentsline {paragraph}{Examples and tests are combined.}{6}{section*.7}%
+\contentsline {subsection}{\numberline {2.1}The current limits of the library}{6}{subsection.2.1}%
+\contentsline {section}{\numberline {3}Use cases}{7}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Teaching: derivations on demand}{7}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Homework and assessment}{7}{subsection.3.2}%
+\contentsline {paragraph}{Designing problems.}{7}{section*.8}%
+\contentsline {paragraph}{Automatic grading.}{7}{section*.9}%
+\contentsline {subsection}{\numberline {3.3}Checking hand calculations and published formulas}{8}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Exploring modified and effective theories}{8}{subsection.3.4}%
+\contentsline {subsection}{\numberline {3.5}Research prototyping}{8}{subsection.3.5}%
+\contentsline {subsection}{\numberline {3.6}Self-study and cross-checking other software}{8}{subsection.3.6}%
+\contentsline {section}{\numberline {4}Theoretical framework}{8}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Action principle and field equations}{8}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Symmetries and Noether's theorem}{9}{subsection.4.2}%
+\contentsline {paragraph}{Spacetime symmetries.}{9}{section*.10}%
+\contentsline {subsection}{\numberline {4.3}Energy--momentum tensors}{9}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}Gauge symmetries, constraints and degrees of freedom}{10}{subsection.4.4}%
+\contentsline {subsection}{\numberline {4.5}Linearised waves}{10}{subsection.4.5}%
+\contentsline {subsection}{\numberline {4.6}Gauge theory}{10}{subsection.4.6}%
+\contentsline {section}{\numberline {5}Implementation}{11}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Architecture}{11}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Spacetime and curved backgrounds}{12}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}Tensors}{12}{subsection.5.3}%
+\contentsline {paragraph}{Contraction.}{12}{section*.11}%
+\contentsline {paragraph}{Metric operations.}{12}{section*.12}%
+\contentsline {paragraph}{Derivatives.}{12}{section*.13}%
+\contentsline {subsection}{\numberline {5.4}The \LaTeX {} parser}{12}{subsection.5.4}%
+\contentsline {paragraph}{Scoping rule.}{13}{section*.14}%
+\contentsline {paragraph}{Operator-valued groups.}{13}{section*.15}%
+\contentsline {paragraph}{Symbols, subscripts, accents.}{13}{section*.16}%
+\contentsline {paragraph}{Built-in tensors.}{13}{section*.17}%
+\contentsline {paragraph}{Other conveniences.}{13}{section*.18}%
+\contentsline {subsection}{\numberline {5.5}The \texttt {Model} object}{13}{subsection.5.5}%
+\contentsline {subsection}{\numberline {5.6}Euler--Lagrange equations}{14}{subsection.5.6}%
+\contentsline {subsection}{\numberline {5.7}Noether currents and energy--momentum tensors}{14}{subsection.5.7}%
+\contentsline {paragraph}{Algorithm.}{14}{section*.19}%
+\contentsline {paragraph}{Hilbert tensor.}{14}{section*.20}%
+\contentsline {subsection}{\numberline {5.8}Hamiltonian analysis}{14}{subsection.5.8}%
+\contentsline {paragraph}{Construction.}{14}{section*.21}%
+\contentsline {paragraph}{Brackets.}{15}{section*.22}%
+\contentsline {paragraph}{Dirac--Bergmann.}{15}{section*.23}%
+\contentsline {subsection}{\numberline {5.9}Waves and dispersion relations}{15}{subsection.5.9}%
+\contentsline {subsection}{\numberline {5.10}Gauge theory}{15}{subsection.5.10}%
+\contentsline {paragraph}{Lie algebras.}{15}{section*.24}%
+\contentsline {paragraph}{\texttt {GaugeTheory}.}{15}{section*.25}%
+\contentsline {paragraph}{Gauge variations and masses.}{16}{section*.26}%
+\contentsline {subsection}{\numberline {5.11}Expressing results covariantly: \texttt {fit}}{16}{subsection.5.11}%
+\contentsline {subsection}{\numberline {5.12}Grading}{16}{subsection.5.12}%
+\contentsline {subsection}{\numberline {5.13}Testing and validation}{16}{subsection.5.13}%
+\contentsline {subsection}{\numberline {5.14}Performance}{17}{subsection.5.14}%
+\contentsline {subsection}{\numberline {5.15}Availability}{17}{subsection.5.15}%
+\contentsline {section}{\numberline {6}Worked examples}{17}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Scalar fields and solitons}{17}{subsection.6.1}%
+\contentsline {subsubsection}{Example\nobreakspace {}1: The Klein--Gordon field}{17}{section*.27}%
+\contentsline {paragraph}{Background.}{18}{section*.28}%
+\contentsline {paragraph}{Results.}{18}{section*.29}%
+\contentsline {paragraph}{Extension.}{18}{section*.30}%
+\contentsline {subsubsection}{Example\nobreakspace {}2: Solitons in $1{+}1$ dimensions: the $\phi ^4$ kink and sine-Gordon}{18}{section*.31}%
+\contentsline {paragraph}{Background.}{18}{section*.32}%
+\contentsline {paragraph}{Results.}{19}{section*.33}%
+\contentsline {paragraph}{Extension.}{19}{section*.34}%
+\contentsline {subsection}{\numberline {6.2}Abelian gauge fields}{19}{subsection.6.2}%
+\contentsline {subsubsection}{Example\nobreakspace {}3: Maxwell electrodynamics}{19}{section*.35}%
+\contentsline {paragraph}{Background.}{19}{section*.36}%
+\contentsline {paragraph}{Results.}{20}{section*.37}%
+\contentsline {paragraph}{Extension.}{20}{section*.38}%
+\contentsline {subsubsection}{Example\nobreakspace {}4: Massive vector fields: Proca and St\"uckelberg}{20}{section*.39}%
+\contentsline {paragraph}{Background.}{20}{section*.40}%
+\contentsline {paragraph}{Results.}{21}{section*.41}%
+\contentsline {paragraph}{Extension.}{21}{section*.42}%
+\contentsline {subsubsection}{Example\nobreakspace {}5: Scalar QED and the abelian Higgs mechanism}{21}{section*.43}%
+\contentsline {paragraph}{Background.}{21}{section*.44}%
+\contentsline {paragraph}{Results.}{22}{section*.45}%
+\contentsline {paragraph}{Extension.}{22}{section*.46}%
+\contentsline {subsubsection}{Example\nobreakspace {}6: The $\mathrm O(N)$ model and Goldstone's theorem}{22}{section*.47}%
+\contentsline {paragraph}{Background.}{22}{section*.48}%
+\contentsline {paragraph}{In the library.}{22}{section*.49}%
+\contentsline {paragraph}{Results.}{23}{section*.50}%
+\contentsline {paragraph}{Extension.}{23}{section*.51}%
+\contentsline {subsection}{\numberline {6.3}Non-abelian gauge theory}{23}{subsection.6.3}%
+\contentsline {subsubsection}{Example\nobreakspace {}7: Yang--Mills theory: $\mathrm {SU}(2)$ and $\mathrm {SU}(3)$}{23}{section*.52}%
+\contentsline {paragraph}{Background.}{23}{section*.53}%
+\contentsline {paragraph}{Results.}{23}{section*.54}%
+\contentsline {paragraph}{Extension.}{24}{section*.55}%
+\contentsline {subsubsection}{Example\nobreakspace {}8: The electroweak Higgs mechanism, $\mathrm {SU}(2)_L\times \mathrm U(1)_Y$}{24}{section*.56}%
+\contentsline {paragraph}{Background.}{24}{section*.57}%
+\contentsline {paragraph}{In the library.}{24}{section*.58}%
+\contentsline {paragraph}{Results.}{24}{section*.59}%
+\contentsline {paragraph}{Extension.}{25}{section*.60}%
+\contentsline {subsection}{\numberline {6.4}Matter, energy--momentum and gravity}{25}{subsection.6.4}%
+\contentsline {subsubsection}{Example\nobreakspace {}9: Quantum electrodynamics with a classical Dirac field}{25}{section*.61}%
+\contentsline {paragraph}{Background.}{25}{section*.62}%
+\contentsline {paragraph}{Results.}{25}{section*.63}%
+\contentsline {paragraph}{Extension.}{25}{section*.64}%
+\contentsline {subsubsection}{Example\nobreakspace {}10: Energy--momentum tensors: canonical, Belinfante and Hilbert}{26}{section*.65}%
+\contentsline {paragraph}{Background.}{26}{section*.66}%
+\contentsline {paragraph}{Results.}{26}{section*.67}%
+\contentsline {paragraph}{Extension.}{26}{section*.68}%
+\contentsline {subsubsection}{Example\nobreakspace {}11: Fields on curved backgrounds: FRW cosmology and Schwarzschild}{26}{section*.69}%
+\contentsline {paragraph}{Background.}{26}{section*.70}%
+\contentsline {paragraph}{In the library.}{27}{section*.71}%
+\contentsline {paragraph}{Results.}{27}{section*.72}%
+\contentsline {paragraph}{Extension.}{27}{section*.73}%
+\contentsline {subsection}{\numberline {6.5}Towards the research frontier}{27}{subsection.6.5}%
+\contentsline {subsubsection}{Example\nobreakspace {}12: Axion electrodynamics and topological terms}{27}{section*.74}%
+\contentsline {paragraph}{Background.}{27}{section*.75}%
+\contentsline {paragraph}{Results.}{28}{section*.76}%
+\contentsline {paragraph}{Extension.}{28}{section*.77}%
+\contentsline {subsubsection}{Example\nobreakspace {}13: Nonlinear electrodynamics: vacuum birefringence}{28}{section*.78}%
+\contentsline {paragraph}{Background.}{28}{section*.79}%
+\contentsline {paragraph}{In the library.}{28}{section*.80}%
+\contentsline {paragraph}{Results.}{29}{section*.81}%
+\contentsline {paragraph}{Extension.}{29}{section*.82}%
+\contentsline {subsubsection}{Example\nobreakspace {}14: Higher-derivative electrodynamics: Podolsky's theory}{29}{section*.83}%
+\contentsline {paragraph}{Background.}{29}{section*.84}%
+\contentsline {paragraph}{In the library.}{30}{section*.85}%
+\contentsline {paragraph}{Results.}{30}{section*.86}%
+\contentsline {paragraph}{Extension.}{30}{section*.87}%
+\contentsline {subsubsection}{Example\nobreakspace {}15: Topologically massive electrodynamics in $2{+}1$ dimensions}{30}{section*.88}%
+\contentsline {paragraph}{Background.}{30}{section*.89}%
+\contentsline {paragraph}{Results.}{31}{section*.90}%
+\contentsline {paragraph}{Extension.}{31}{section*.91}%
+\contentsline {subsubsection}{Example\nobreakspace {}16: The BPST instanton}{31}{section*.92}%
+\contentsline {paragraph}{Background.}{31}{section*.93}%
+\contentsline {paragraph}{In the library.}{31}{section*.94}%
+\contentsline {paragraph}{Results.}{32}{section*.95}%
+\contentsline {paragraph}{Extension.}{32}{section*.96}%
+\contentsline {subsubsection}{Example\nobreakspace {}17: The 't\nobreakspace {}Hooft--Polyakov magnetic monopole}{32}{section*.97}%
+\contentsline {paragraph}{Background.}{32}{section*.98}%
+\contentsline {paragraph}{In the library.}{32}{section*.99}%
+\contentsline {paragraph}{Results.}{33}{section*.100}%
+\contentsline {paragraph}{Extension.}{33}{section*.101}%
+\contentsline {subsubsection}{Example\nobreakspace {}18: A tour of spacetime symmetries and their Noether currents}{33}{section*.102}%
+\contentsline {paragraph}{Background.}{33}{section*.103}%
+\contentsline {paragraph}{In the library.}{33}{section*.104}%
+\contentsline {paragraph}{Results.}{34}{section*.105}%
+\contentsline {paragraph}{Extension.}{34}{section*.106}%
+\contentsline {section}{\numberline {7}Discussion}{34}{section.7}%
+\contentsline {subsection}{\numberline {7.1}Limitations}{34}{subsection.7.1}%
+\contentsline {subsection}{\numberline {7.2}Related software}{35}{subsection.7.2}%
+\contentsline {subsection}{\numberline {7.3}Future directions}{35}{subsection.7.3}%
+\contentsline {subsection}{\numberline {7.4}Conclusion}{35}{subsection.7.4}%
+\contentsline {section}{\numberline {A}Conventions}{36}{appendix.A}%
+\contentsline {section}{\numberline {B}The \LaTeX {} subset}{36}{appendix.B}%
+\contentsline {paragraph}{Semantics.}{37}{section*.109}%
+\contentsline {section}{\numberline {C}API summary}{37}{appendix.C}%
+\contentsline {section}{\numberline {D}Reproducing the results}{38}{appendix.D}%

@@ -1,0 +1,26 @@
+\section{Intent and design principles}
+\label{sec:intent}
+
+\fs{} was written for a specific purpose: to support the teaching of classical field theory and gauge theory to upper-level undergraduates and early graduate students, and to be a scaffold on which advanced homework and exploratory research calculations can be built. Several design decisions follow directly from that purpose.
+
+\paragraph{Verify, do not pattern-match.}
+A teaching tool that returns a plausible-looking but unchecked formula is worse than no tool. Whenever the library can establish a statement by exact computation, it does so, and every answer is an explicit expression that can be inspected. The Euler--Lagrange equations are \emph{derived} from the action, not looked up; the Bianchi identity is \emph{verified} by expanding both sides on components; the conservation of a Noether current is confirmed through the independent Noether identity (\cref{sec:noether}); a claimed solution is inserted into the equations. The library also contains negative controls: its fitting routine, for instance, returns \code{None} when a target is not in the span of the proposed building blocks, and the test-suite checks this behaviour explicitly.
+
+\paragraph{Write physics, not code.}
+The input language is \LaTeX{} in index notation because that is what physicists write. A student who can type $\frac12\pd_\mu\phi\,\pd^\mu\phi-\frac12m^2\phi^2$ in a problem set can type the same string to the library. This lowers the barrier to using the tool for homework and makes the examples readable as physics.
+
+\paragraph{Components inside, covariant outside.}
+Internally, fields are SymPy functions of the coordinates and tensors are stored by their components. This choice trades efficiency for transparency and robustness: there is no abstract-index canonicaliser that can be wrong, every intermediate quantity can be printed and plotted, and any result can be handed to the rest of SymPy. The price is that the cost grows with spacetime dimension and group size (\cref{sec:limits}). To compensate for the loss of readability, the \code{fit} routine of \cref{sec:fit} maps component results back to covariant form.
+
+\paragraph{A small, readable core.}
+The entire library is about $2{,}700$ lines of Python. A graduate student can read the Noether routine in an afternoon and see exactly how the current is built. We regard this as a feature: a teaching library should be inspectable, and a research prototype should be hackable.
+
+\paragraph{Explicit limits.}
+We prefer an explicit \code{NotImplementedError} to a wrong answer. The canonical module refuses Lagrangians with higher time derivatives or non-quadratic velocity dependence; the Hilbert-tensor routine refuses curved backgrounds. The limitations are listed in \cref{sec:limits} and repeated in the documentation shipped with the code.
+
+\paragraph{Examples and tests are combined.}
+Each of the eighteen examples ends in explicit pass/fail assertions on known results (\cref{sec:testing}). They therefore serve three purposes at once: documentation for the user, a regression suite for the developer, and a catalogue of results with which one can compare an unfamiliar tool.
+
+\subsection{The current limits of the library}
+
+\fs{} is not a Feynman-diagram generator, a quantum field theory package, or a numerical relativity code. It does not replace analytic insight: it removes the algebraic burden so that the user can concentrate on what the results mean. Likewise it is not a general tensor-algebra system; there is no canonicaliser for abstract index expressions and no support for Riemann-tensor monomials in arbitrary dimension. Finally, it is not yet a tool for gravitational dynamics: curvature tensors and covariant derivatives are available (\cref{sec:curved}), but the metric is a background, not a dynamical field.

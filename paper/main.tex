@@ -1,0 +1,110 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{bm}
+\usepackage{booktabs,array,longtable}
+\usepackage{float}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage{listings}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,fit,calc}
+\usepackage[colorlinks=true,linkcolor=blue!50!black,citecolor=green!40!black,urlcolor=blue!50!black]{hyperref}
+\usepackage[capitalise,noabbrev]{cleveref}
+
+
+
+% ---------- listings ----------
+\definecolor{codebg}{gray}{0.96}
+\definecolor{codekw}{rgb}{0.1,0.2,0.6}
+\definecolor{codestr}{rgb}{0.55,0.1,0.1}
+\definecolor{codecom}{rgb}{0.25,0.45,0.25}
+\lstdefinestyle{py}{
+  language=Python, basicstyle=\ttfamily\footnotesize, backgroundcolor=\color{codebg},
+  keywordstyle=\color{codekw}\bfseries, stringstyle=\color{codestr}, commentstyle=\color{codecom}\itshape,
+  frame=single, rulecolor=\color{black!20}, breaklines=true, breakatwhitespace=false,
+  columns=fullflexible, keepspaces=true, breakautoindent=true, postbreak=\mbox{\textcolor{gray}{$\hookrightarrow$}\space}, showstringspaces=false, xleftmargin=3pt, xrightmargin=3pt,
+  aboveskip=6pt, belowskip=6pt, literate={\ \ }{{\ }}1}
+\lstset{style=py}
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\fs}{\textsc{fieldsmith}}
+
+
+% ---------- physics macros ----------
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\ii}{\mathrm{i}}
+\newcommand{\ee}{\mathrm{e}}
+\newcommand{\pd}{\partial}
+\newcommand{\tr}{\operatorname{tr}}
+\newcommand{\EL}[1]{\frac{\delta S}{\delta #1}}
+\newcommand{\dual}[1]{\widetilde{#1}}
+\renewcommand{\Box}{\square}
+\newcommand{\vect}[1]{\bm{#1}}
+\newcommand{\order}[1]{\mathcal{O}(#1)}
+\newcommand{\weq}{\approx}          % weak equality (Dirac)
+\newcommand{\PB}[2]{\{#1,#2\}}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\diag}{diag}
+
+\theoremstyle{definition}
+\newtheorem{example}{Example}
+\newtheorem{definition}{Definition}
+\theoremstyle{plain}
+\newtheorem{proposition}{Proposition}
+
+\newcounter{ex}
+\crefname{ex}{Example}{Examples}
+\Crefname{ex}{Example}{Examples}
+\newcommand{\exheading}[4]{%
+  \refstepcounter{ex}\label{#1}%
+  \subsubsection*{Example~\theex: #2}%
+  \addcontentsline{toc}{subsubsection}{Example~\theex: #2}%
+  \noindent{\small\textit{Level: #4.\ Source: \texttt{examples/#3}.}}\par\smallskip}
+\newenvironment{keyresult}{\par\smallskip\noindent\begin{tabular}{|p{0.94\textwidth}}\hline\small}{\\\hline\end{tabular}\par\smallskip}
+
+\title{\textbf{\fs{}: Automated symbolic derivation in classical field theory and gauge theory from \LaTeX{} input}} %\\[4pt]
+
+%\large Design, implementation, and a guided tour of the physics through eighteen worked examples}
+
+\author{Nikola Mirkov \\    
+\small `Vin\v{c}a' Institute of Nuclear Sciences--National Institute of the Republic of Serbia,\\ \small University of Belgrade, Mike Petrovi\'{c}a Alasa 12-14, 11351 Belgrade, Serbia\\
+\small \texttt{nmirkov@vin.bg.ac.rs}}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent
+We present \fs{}, an open-source Python library for the automated derivation of analytical results in classical field theory, including non-abelian gauge theories. A Lagrangian is entered the way it is written on a blackboard, in \LaTeX{} index notation, and the library produces and \emph{verifies} Euler--Lagrange equations (of arbitrary derivative order, on flat or curved backgrounds), Noether currents and identities, canonical and Hilbert energy--momentum tensors, canonical momenta and Hamiltonians, local Poisson brackets and a Dirac--Bergmann constraint analysis with degree-of-freedom counting, linearised wave equations and dispersion relations, gauge-covariant derivatives and field strengths for products of unitary groups, and mass spectra after spontaneous symmetry breaking. A fitting routine translates component-level output back into covariant index notation, and a grading module checks students' submitted field equations, identities and conserved currents. The implementation is a compact (about 2,700 lines) layer on top of \textsc{SymPy}: tensors are stored by components with labelled, variance-aware slots, and every statement is established by exact symbolic computation rather than pattern matching.
+This document is the companion guide to the library. It explains the intent and design, describes the algorithms, and then works through eighteen self-checking examples, ranging from the Klein--Gordon field to the BPST instanton and the 't~Hooft--Polyakov monopole, each preceded by the background physics needed to follow it. The examples double as a compact introduction to classical field theory and gauge theory as seen through a computational lens. We are explicit about the limitations of the approach.
+\end{abstract}
+
+\tableofcontents
+\clearpage
+
+\input{sec_intro}
+\input{sec_intent}
+\input{sec_usecases}
+\input{sec_framework}
+\input{sec_impl}
+\input{sec_ex_scalar}
+\input{sec_ex_nonabelian}
+\input{sec_ex_frontier}
+\input{sec_discussion}
+
+\appendix
+\input{app_conventions}
+\input{app_grammar}
+\input{app_api}
+\input{app_repro}
+
+\bibliographystyle{unsrtnat}
+\bibliography{refs}
+\end{document}

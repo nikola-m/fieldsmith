@@ -1,0 +1,37 @@
+\section{API summary}
+\label{app:api}
+
+\begin{table}[H]
+\centering\small
+\begin{tabular}{@{}p{5.6cm}p{9.0cm}@{}}
+\toprule
+Call & Result \\
+\midrule
+\code{Model(spacetime, strict, eps0123)} & model on a given spacetime (default $3{+}1$ Minkowski) \\
+\code{M.parameters("m g", **assume)} & symbols \\
+\code{M.scalar / vector / tensor / multiplet / field} & declare fields \\
+\code{M.add\_index\_space(kind, letters, dim)} & custom index family \\
+\code{M.define(lhs, rhs)} & derived tensor, usable in later strings \\
+\code{M.lagrangian(s)} & parse and expand a scalar Lagrangian \\
+\code{M.parse(s, as\_tensor)} & parse arbitrary \LaTeX{} expression \\
+\code{M.check(s)} & verify an identity \texttt{lhs = rhs} \\
+\code{M.euler\_lagrange(L)} & \code{EquationSet}: EL equations (any order) \\
+\code{E.tensor(name)} / \code{E[name]} & field equations as tensor / expression \\
+\code{E.check\_solution(map, numeric)} & test a candidate solution \\
+\code{fit(M, tensor, basis)} & coefficients of covariant decomposition, or \code{None} \\
+\code{noether\_current(M, L, var, K)} & \code{NoetherCurrent}: $J^\mu$, \code{identity\_holds()} \\
+\code{symmetry\_defect(M, L, var, K)} & $\delta\mathcal L-\pd_\mu K^\mu$ \\
+\code{complex\_variation(M, name, expr)} & variation of a complex field and its conjugate \\
+\code{canonical\_stress\_tensor(M, L)} & $T^\mu{}_\nu$ \\
+\code{hilbert\_stress\_tensor(M, L\_str)} & $T_{\mu\nu}$ (flat, string Lagrangian) \\
+\code{Hamiltonian(M, L)} & $\pi$, $H$, \code{bracket}, \code{hamilton\_equations}, \code{dirac\_analysis} \\
+\code{linearize(M, E, background)} & linear equations and perturbation fields \\
+\code{dispersion(M, exprs, funcs)} & $K$, $\det K$, $\omega$-roots, rank, \code{pdet} \\
+\code{LieAlgebra.su(N) / u1()} & generators, $f^{abc}$, Casimir, Jacobi test \\
+\code{GaugeTheory(M)} & \code{add\_group}, \code{add\_matter}, \code{gauge\_parameters}, \code{gauge\_variation}, \code{gauge\_mass\_matrix} \\
+\code{scalar\_mass\_matrix(M, V, fields, vac)} & Hessian of a potential \\
+\code{grade\_field\_equation / grade\_identity / grade\_conserved\_current} & truthy \code{Grade} with a message \\
+\bottomrule
+\end{tabular}
+\caption{Principal entry points of \fs{}.}
+\end{table}

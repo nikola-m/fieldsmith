@@ -1,0 +1,53 @@
+\section{Use cases}
+\label{sec:usecases}
+
+We describe the scenarios the library was designed for. Each corresponds to a concrete workflow, and most are illustrated by one or more of the examples in \cref{part:examples}.
+
+\subsection{Teaching: derivations on demand}
+
+In lectures, the point of a derivation is usually its \emph{structure}, but the algebra is where time is lost. With \fs{} the instructor can write a Lagrangian, obtain the field equations, and move on to the physics. Typical live demonstrations include: the Klein--Gordon equation and its plane-wave dispersion (\cref{ex:kg}), the Maxwell equations and the Bianchi identity (\cref{ex:maxwell}), the Proca equation and the implied Lorenz condition (\cref{ex:proca}), the Higgs mechanism with explicit mass formulas (\cref{ex:higgs,ex:ew}), and Noether's theorem for translations, boosts and rotations (\cref{ex:symmetries}). Because results come back as explicit expressions, they can be compared directly with the textbook formulas and the audience can see the match.
+
+\Cref{tab:course} maps a standard course outline to the library calls used. The accompanying documentation includes a suggested twelve-week syllabus with exercises.
+\begin{table}[ht]
+\centering\small
+\begin{tabular}{@{}p{4.6cm}p{5.3cm}p{4.6cm}@{}}
+\toprule
+Course topic & Library call(s) & Example \\
+\midrule
+Action principle, field equations & \code{euler\_lagrange}, \code{check\_solution} & \ref{ex:kg}, \ref{ex:kink} \\
+Solitons, Bogomolny bounds & \code{check\_solution}, energy density & \ref{ex:kink}, \ref{ex:bpst}, \ref{ex:monopole} \\
+Symmetries and conserved currents & \code{noether\_current}, \code{symmetry\_defect} & \ref{ex:symmetries}, \ref{ex:goldstone} \\
+Energy--momentum tensors & \code{canonical\_stress\_tensor}, \code{hilbert\_stress\_tensor} & \ref{ex:stress} \\
+Gauge invariance, constraints & \code{gauge\_variation}, \code{dirac\_analysis} & \ref{ex:maxwell}, \ref{ex:proca} \\
+Spontaneous symmetry breaking & \code{scalar\_mass\_matrix}, \code{gauge\_mass\_matrix} & \ref{ex:higgs}, \ref{ex:goldstone}, \ref{ex:ew} \\
+Yang--Mills theory & \code{GaugeTheory}, \code{LieAlgebra} & \ref{ex:ym} \\
+Spinors & \code{add\_matter(...,spinor=True)} & \ref{ex:qed} \\
+Fields on curved backgrounds & \code{Spacetime}, \verb|\nabla| & \ref{ex:frw} \\
+Wave propagation, dispersion & \code{linearize}, \code{dispersion} & \ref{ex:kg}, \ref{ex:axion}, \ref{ex:eh} \\
+\bottomrule
+\end{tabular}
+\caption{Mapping a typical classical-field-theory course onto the library.}
+\label{tab:course}
+\end{table}
+
+\subsection{Homework and assessment}
+
+\paragraph{Designing problems.} A teacher can pose problems with guaranteed-correct answer keys: ``derive the field equation of $\mathcal L=\dots$'', ``show that $\delta\phi=\dots$ is a symmetry and find the current'', ``count the degrees of freedom of $\dots$'', ``find the mass spectrum after $\langle\Phi\rangle=\dots$''. Variants of a problem are obtained by changing the Lagrangian and rerunning the script. Because the cost of producing an answer key is a few lines of code, it becomes practical to give each student a different variant.
+
+\paragraph{Automatic grading.} The \code{teaching} module compares a submitted answer, as a \LaTeX{} string, with the correct one. Equivalent forms are accepted (reordered terms, relabelled dummy indices, overall sign or normalisation for equations of motion), while a wrong sign in a mass term or a forgotten term is detected and reported with a message. Details are in \cref{sec:grading}. Because the student's input is parsed, never executed, grading is safe to run on untrusted submissions.
+
+\subsection{Checking hand calculations and published formulas}
+
+A researcher deriving a new result by hand can use the library as an independent check at each step: Is this field equation consistent with that Lagrangian? Is this current really conserved? Does this ansatz solve the equations? The \code{check} and \code{check\_solution} interfaces are intended for this use, and the \code{fit} routine reports whether a messy expression is a combination of the covariant quantities the researcher expects. The same ability is useful when reading a paper: type in its Lagrangian and test its claims.
+
+\subsection{Exploring modified and effective theories}
+
+Because the machinery does not assume a particular Lagrangian, it is straightforward to explore variants: add a term and ask what changes. The frontier examples (\cref{sec:frontier}) are written precisely so that they can be edited in this way. For instance, adding $-\tfrac g4aF\dual F$ to Maxwell theory yields axion electrodynamics and its birefringence (\cref{ex:axion}); adding $c_1(F^2)^2+c_2(F\dual F)^2$ gives the Euler--Heisenberg effective theory and the vacuum refractive indices (\cref{ex:eh}); adding $\tfrac{a^2}{2}(\pd_\mu F^{\mu\nu})^2$ gives Podolsky electrodynamics, a fourth-order theory with a finite Coulomb self-energy (\cref{ex:podolsky}).
+
+\subsection{Research prototyping}
+
+For new theories, the first questions are usually structural: how many degrees of freedom does it have, which constraints are first class (gauge symmetries), what is the dispersion relation of small perturbations about a background, and is there a conserved current for a given symmetry? The Dirac--Bergmann module and the dispersion module answer exactly these. We have used them to reproduce the textbook counts (Maxwell $2$, Proca $3$, Dirac $4$, topologically massive electrodynamics $1$), and the same functions can be pointed at an unfamiliar vector, tensor or higher-form theory as a first diagnostic. The result is not a proof of consistency---the algorithms are classical, restricted (\cref{sec:limits}), and not a substitute for a careful analysis---but it identifies pathologies early and cheaply.
+
+\subsection{Self-study and cross-checking other software}
+
+Finally, a self-learner can use the examples as worked solutions and modify them. The examples also provide benchmarks for other tools: each prints well-defined results (e.g.\ the $7{:}4$ ratio of the Euler--Heisenberg refractive indices, the instanton action $8\pi^2/g^2$, the monopole mass $4\pi v/g$) that another implementation can be compared against.

@@ -1,0 +1,194 @@
+\section{Implementation}
+\label{sec:impl}
+
+\subsection{Architecture}
+\label{sec:arch}
+
+The library is organised as a pipeline (\cref{fig:arch}). A \code{Model} object owns the spacetime, the registries of fields, parameters and derived tensors, and the parser context. Strings pass through the tokenizer and parser to become \code{Tensor} objects (component dictionaries), which are scalars once all indices are contracted. The analysis modules take a scalar Lagrangian and return \code{EquationSet}, \code{NoetherCurrent}, \code{Hamiltonian} and similar objects, all of which carry explicit SymPy expressions.
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[
+  box/.style={draw,rounded corners=2pt,align=center,minimum height=0.9cm,font=\footnotesize,fill=blue!6},
+  mod/.style={draw,rounded corners=2pt,align=center,minimum height=0.9cm,minimum width=2.5cm,font=\footnotesize,fill=green!8},
+  arr/.style={-{Stealth[length=2mm]},thick}]
+ \node[box] (tex) {\LaTeX{} string\\[-1pt]\texttt{-\textbackslash frac14 F\_\{\textbackslash mu\textbackslash nu\}F\^{}\{\textbackslash mu\textbackslash nu\}}};
+ \node[box,right=0.9cm of tex] (parse) {tokenizer\\+ parser};
+ \node[box,right=0.9cm of parse] (tens) {\code{Tensor}\\(components)};
+ \node[box,right=0.9cm of tens] (L) {scalar $\mathcal L$\\(SymPy)};
+ \node[mod,below=1.3cm of tex,xshift=0.2cm] (el) {Euler--Lagrange\\\code{variational}};
+ \node[mod,right=0.3cm of el] (no) {Noether, $T_{\mu\nu}$\\\code{noether}};
+ \node[mod,right=0.3cm of no] (ha) {Hamiltonian, Dirac\\\code{hamiltonian}};
+ \node[mod,right=0.3cm of ha] (wa) {dispersion\\\code{waves}};
+ \node[mod,below=0.6cm of no,xshift=-1.5cm] (ga) {gauge theory\\\code{gauge}};
+ \node[mod,right=0.3cm of ga] (fi) {\code{fit}, grading\\\code{analysis}, \code{teaching}};
+ \draw[arr] (tex)--(parse); \draw[arr] (parse)--(tens); \draw[arr] (tens)--(L);
+ \draw[arr] (L.south)--++(0,-0.5)-|(el.north); \draw[arr] (L.south)--++(0,-0.5)-|(no.north);
+ \draw[arr] (L.south)--++(0,-0.5)-|(ha.north); \draw[arr] (L.south)--++(0,-0.5)-|(wa.north);
+ \draw[arr,dashed] (ga.north)--++(0,0.25)-|(parse.south);
+ \draw[arr,dashed] (el.south)--++(0,-0.25)-|(fi.north);
+\end{tikzpicture}
+\caption{Data flow in \fs{}. Solid arrows: the main pipeline. Dashed arrows: the gauge module registers the covariant derivative \texttt{D} and the field strength with the parser; \code{fit} and the grader consume the output of the variational routines.}
+\label{fig:arch}
+\end{figure}
+
+\Cref{tab:modules} lists the modules and their sizes. The sizes are in physical lines of Python including docstrings.
+\begin{table}[ht]
+\centering\small
+\begin{tabular}{@{}llr p{8cm}@{}}
+\toprule
+Module & Role & Lines & Contents \\
+\midrule
+\code{spacetime} & geometry & 119 & metrics; Christoffel, Riemann, Ricci, Einstein tensors; Minkowski/Euclidean factories \\
+\code{tensors} & algebra & 372 & \code{Slot}, \code{Tensor}: contraction, raising/lowering, derivatives, symmetry tests \\
+\code{latex} & parser & 547 & tokenizer, recursive-descent parser, operator scoping \\
+\code{model} & registry & 399 & fields, parameters, \code{define}, \code{lagrangian}, \code{check} \\
+\code{variational} & EL & 109 & \code{EquationSet}, \code{euler\_lagrange}, solution checking \\
+\code{noether} & symmetries & 224 & Noether currents, stress tensors, complex variations \\
+\code{hamiltonian} & canonical & 206 & momenta, $\mathcal H$, brackets, Dirac--Bergmann \\
+\code{waves} & spectra & 107 & linearisation, plane waves, dispersion \\
+\code{gauge} & gauge theory & 374 & \code{LieAlgebra}, \code{GaugeTheory}, mass matrices \\
+\code{analysis} & utilities & 100 & \code{fit}, numerical residuals, scalar mass matrix \\
+\code{teaching} & grading & 85 & field-equation, identity and current graders \\
+\code{printing} & output & 40 & \LaTeX{} rendering of results \\
+\bottomrule
+\end{tabular}
+\caption{Modules of \fs{}.}
+\label{tab:modules}
+\end{table}
+
+\subsection{Spacetime and curved backgrounds}
+\label{sec:curved}
+
+A \code{Spacetime} holds the coordinates, the metric $g_{\mu\nu}$ and its inverse, $\sqrt{|g|}$ and a signature tag. Factories build $d$-dimensional Minkowski space (mostly-minus or mostly-plus) and Euclidean space; an arbitrary metric is supplied as a SymPy matrix. From it the module computes the Christoffel symbols $\Gamma^\lambda_{\mu\nu}=\tfrac12g^{\lambda\sigma}(\pd_\mu g_{\sigma\nu}+\pd_\nu g_{\sigma\mu}-\pd_\sigma g_{\mu\nu})$, the Riemann tensor (MTW convention \cite{MTW}), the Ricci tensor and scalar and the Einstein tensor. The covariant derivative \verb|\nabla_\mu| acts on tensors slot by slot, adding one Christoffel term per index with the sign dictated by its variance. The action density in \cref{eq:action} carries $\sqrt{|g|}$ automatically, so \code{euler\_lagrange} on a curved background returns the covariant equation of motion (e.g.\ with Hubble friction in FRW, \cref{ex:frw}). Curvature and covariant derivatives are tested on FRW and Schwarzschild; the metric is a fixed background.
+
+\subsection{Tensors}
+\label{sec:tensors}
+
+A \code{Tensor} stores a list of slots and a dictionary mapping index tuples to component values. Each \code{Slot} records
+\begin{itemize}[nosep]
+\item a \emph{label} (\texttt{mu}, \texttt{a}, \texttt{i}, \dots),
+\item a \emph{kind}: spacetime (\texttt{st}), spatial (\texttt{sp}; ranges over $1,\dots,d-1$ and is used for non-covariant 3-vector notation such as $E_i$ and $\epsilon_{ijk}$), adjoint of a gauge factor (\texttt{ad\_X}, ranging over the dimension of the algebra), or a user-defined family (flavour indices, for example),
+\item a \emph{variance}: upper, lower, or none (adjoint and spatial indices),
+\item the \emph{range} of values.
+\end{itemize}
+Component values are SymPy expressions or, for fields in a non-trivial representation, SymPy column matrices (a $\mathrm{SU}(2)$ doublet is a $2\times1$ matrix; a Dirac spinor a $4\times1$ matrix). Matrices multiply in the order written, and $1\times1$ matrices collapse to scalars, so that $\Phi^\dagger T^a\Phi$ is an ordinary number.
+
+\paragraph{Contraction.} Multiplication of two tensors forms the outer product and then contracts every repeated label. A repeated spacetime label with opposite variance is a metric-free sum $\sum_\mu T_\mu S^\mu$; a spatial or adjoint label sums plainly. If the same spacetime label appears twice in the same position (e.g.\ $A_\mu A_\mu$), the default behaviour is to raise one copy with the metric, which is convenient but hides typographical errors; \code{Model(strict=True)} turns this into an error.
+
+\paragraph{Metric operations.} \code{raise\_}, \code{lower} and \code{set\_var} apply $g^{\mu\nu}$ or $g_{\mu\nu}$ to a slot. Slots restricted to a sub-range (e.g.\ spatial indices on a spacetime axis) refuse the operation when the metric mixes the restricted and unrestricted directions.
+
+\paragraph{Derivatives.} \code{partial} adds a new leading slot $\pd_\mu T$ obtained by differentiating each component; \code{nabla} adds Christoffel corrections on every spacetime slot; \code{dagger} conjugates the components and, for matrix-valued data, transposes them. Symmetry tests (\code{is\_symmetric}, \code{is\_antisymmetric}) compare a tensor with its transpose in a chosen pair of slots. (An earlier version of two examples tested symmetry by permuting labels in a way that reduced to the identity, so the assertion held vacuously; the dedicated transpose predicates were added to prevent this, and the examples now assert both a positive and a negative symmetry property.)
+
+\sloppy\subsection{The \LaTeX{} parser}
+\label{sec:parser}
+
+The parser is a hand-written tokenizer and recursive-descent parser for a subset of \LaTeX{} (the grammar is in \cref{app:grammar}). The principal design question is how to treat derivative operators, because in \LaTeX{} there is no syntactic marker for where the argument of $\pd_\mu$ ends.
+
+\paragraph{Scoping rule.} Operators act on the next postfix term. Thus
+\begin{center}
+\verb|\partial_\mu \phi^2|\quad means\quad $\pd_\mu(\phi^2)$,\qquad
+\verb|\partial_\mu\phi\,\partial^\mu\phi|\quad means\quad $(\pd_\mu\phi)(\pd^\mu\phi)$,
+\end{center}
+and parentheses extend the scope: \verb|\partial_\mu (\phi\psi)|. The same rule governs \verb|\nabla_\mu|, \verb|\Box|, the gauge-covariant \verb|D_\mu| (registered when a gauge group is added) and the Dirac bar \verb|\bar|. Repeated derivatives are contracted after application, so \verb|\partial_\mu\partial^\mu A^\nu| is $\Box A^\nu$.
+
+\paragraph{Operator-valued groups.} Expressions such as \verb|(i\gamma^\mu D_\mu - m)\psi| contain a differential operator inside parentheses. The parser represents the parenthesised group as an \code{OpExpr}, a deferred expression that is applied to the operand that follows. This is what makes the Dirac Lagrangian \verb|\bar\psi (i\gamma^\mu D_\mu - m)\psi| parse.
+
+\paragraph{Symbols, subscripts, accents.} The parser must decide whether a subscript is an index or part of a name. A symbol such as \verb|m_a| or \verb|c_1| is a parameter if registered; \verb|g'| and \verb|g_s| are looked up as primed or subscripted couplings. A parameter named \texttt{g} shadows the built-in metric tensor $g_{\mu\nu}$ unless the symbol is followed by index-like subscripts. Accents are merged into the symbol name: \verb|\tilde{F}| becomes the symbol \texttt{Ftilde}, which the user defines like any other tensor (e.g.\ the dual field strength). Conjugation is written \verb|\phi^*|, \verb|\phi^\dagger| or \verb|(\ldots)^\dagger|.
+
+\paragraph{Built-in tensors.} The metric $g_{\mu\nu}$ and $\eta_{\mu\nu}$, the Kronecker $\delta^\mu_\nu$ and the Levi-Civita symbol $\epsilon$ of any rank equal to the dimension are available. The latter is a tensor with $\epsilon^{0\cdots d-1}=+1/\sqrt{|g|}$; spatial $\epsilon_{ijk}$ (rank $d-1$ on the spatial slots) is used for 3-vector expressions such as the magnetic field. Gamma matrices are installed in the Dirac representation when a spinor is declared.
+
+\paragraph{Other conveniences.} Fractions with the shorthand \verb|\frac12|, factorials (so that $\phi^4/4!$ is written naturally), elementary functions, the self-contraction shorthand \verb|(F_{\mu\nu})^2|, and spacing commands are all handled. \verb|\sum| and \verb|\int| are not supported: sums are written by repeated indices, and spacetime integrals are never written, because the action is implicit.
+
+\subsection{The \code{Model} object}
+\label{sec:model}
+
+A \code{Model} keeps the following registries.
+\begin{description}[nosep,leftmargin=1.2em]
+\item[Parameters] declared with assumptions (\code{M.parameters("m lambda", positive=True)}); returned as SymPy symbols.
+\item[Fields] \code{scalar}, \code{vector}, \code{tensor}, \code{multiplet}, general \code{field(name, index spaces, variances, \dots)}. A field with spacetime rank $r$ is stored as a tensor whose components are SymPy undefined functions $A_\mu\to\texttt{A[mu](t,x,y,z)}$, named by component; a complex field also registers its conjugate (named with a trailing star).
+\item[Index spaces] \code{add\_index\_space} introduces a new family of labels with a range, used e.g.\ for the $N$ components of an $\mathrm{O}(N)$ vector (\cref{ex:goldstone}).
+\item[Derived tensors] \code{define(lhs, rhs)} parses the right-hand side and stores the resulting tensor under the name on the left, with the stated index structure. Because definitions are evaluated eagerly, they can be used in subsequent strings exactly as symbols; for instance defining \verb|F_{\mu\nu}| as \verb|\partial_\mu A_\nu - \partial_\nu A_\mu| allows \verb|F^{\mu\nu}| later, with the metric applied.
+\item[Operators and conjugation map] used by the parser for \verb|\bar|, \verb|\dagger| and the covariant derivative.
+\end{description}
+\code{lagrangian(s)} parses a string to a scalar and fully expands it. \code{check(s)} parses a string of the form \texttt{lhs = rhs}, brings both sides to common index structure and returns whether their difference vanishes after simplification; it is the engine for verifying identities (Bianchi, current conservation, algebraic relations).
+
+\subsection{Euler--Lagrange equations}
+\label{sec:el-impl}
+
+\code{euler\_lagrange(L)} multiplies $\mathcal L$ by $\sqrt{|g|}$, calls SymPy's \code{euler\_equations} for each field function (this handles derivatives of arbitrary order), and divides the result by $\sqrt{|g|}$ so that the output is the covariant equation \cref{eq:EL}. The result is an \code{EquationSet}, indexable by position, by field-function or by name; \code{tensor(name)} assembles the equations of a vector or tensor field into a \code{Tensor} with the opposite variance ($E^\nu=\delta S/\delta A_\nu$), which is what \code{fit} consumes. \code{check\_solution} substitutes a mapping from field functions to expressions and tests for vanishing, either by symbolic simplification or, for transcendental solutions (breathers, monopole profiles), by evaluating the residual at random rational points to $30$ digits (\code{numeric=True}); free parameters are given random values and the residual is reported.
+
+\subsection{Noether currents and energy--momentum tensors}
+\label{sec:noether}
+
+\paragraph{Algorithm.} Given $\mathcal L$ and a dictionary of field variations $\delta\varphi_I$ (for complex fields both the field and its conjugate are given, by a helper that conjugates the transformation), \code{noether\_current} proceeds as follows.
+\begin{enumerate}[nosep]
+\item Compute $\delta\mathcal L$ by substituting $\varphi_I\to\varphi_I+\epsilon\,\delta\varphi_I$ and differentiating with respect to $\epsilon$ at $\epsilon=0$.
+\item If a boundary term $K^\mu$ is supplied, test that $\delta\mathcal L-\pd_\mu K^\mu$ vanishes identically; if not, raise an error (the \emph{symmetry check}). The defect is available separately as \code{symmetry\_defect}, and is how the library reports \emph{how} a symmetry is broken, e.g.\ $m^2\phi^2$ for the dilatation current of a massive field.
+\item Collect the momenta $P^{\alpha_1\ldots\alpha_k}=\pd\mathcal L/\pd(\pd_{\alpha_1\ldots\alpha_k}\varphi_I)$, distributing the derivative of $\mathcal L$ with respect to a mixed partial equally over its distinct orderings, and assemble $J_0^\mu$ from \cref{eq:Jhigher} and $J^\mu=J_0^\mu-K^\mu$.
+\item Verify the Noether identity \cref{eq:noether-id} with the equations from \code{euler\_lagrange}. This check is independent of the construction in step 3 and is what \code{NoetherCurrent.identity\_holds} runs.
+\end{enumerate}
+The canonical stress tensor $T^\mu{}_\nu$ is obtained by running the algorithm for $\delta\varphi_I=\pd_\nu\varphi_I$ with $K^\mu=\delta^\mu_\nu\mathcal L$ for each $\nu$, so it inherits the generality (higher derivatives) and the checking.
+
+\paragraph{Hilbert tensor.} \code{hilbert\_stress\_tensor} implements \cref{eq:Thilb} by a first-order perturbation of the inverse metric, $g^{\mu\nu}=\eta^{\mu\nu}+h^{\mu\nu}$, with $g_{\mu\nu}=\eta_{\mu\nu}-\eta_{\mu\alpha}h^{\alpha\beta}\eta_{\beta\nu}$ and $\sqrt{|g|}=1-\tfrac12\tr(h\eta)$ to the same order. The Lagrangian string is \emph{re-parsed} in a model whose spacetime carries the perturbed metric, so every contraction picks up its dependence on $h$; the derivative of $\sqrt{|g|}\mathcal L$ with respect to $h^{\mu\nu}$ at $h=0$ gives $T_{\mu\nu}$ (with the factor $\tfrac12$ for off-diagonal entries and the sign appropriate to the signature). Because it re-parses, the function takes the Lagrangian as a \emph{string}, and any derived tensors it uses should be built from metric-independent pieces such as $F_{\mu\nu}=\pd_\mu A_\nu-\pd_\nu A_\mu$. It is restricted to flat backgrounds and bosonic fields (a spinor requires a tetrad, which is not implemented).
+
+\subsection{Hamiltonian analysis}
+\label{sec:ham-impl}
+
+\paragraph{Construction.} The \code{Hamiltonian} class first rejects Lagrangians containing time derivatives of order higher than one (\code{NotImplementedError}: Ostrogradsky's construction \cite{Ostrogradsky1850,Woodard2007} is not implemented). It replaces $\dot\varphi_I$ by symbols $v_I$ and computes $p_I(\varphi,\pd_i\varphi,v)=\pd\mathcal L/\pd v_I$, building the matrix $W_{IJ}=\pd p_I/\pd v_J$. Fields with an identically zero row are \emph{singular}: their momenta give primary constraints $\pi^I-p_I|_{v=0}\weq0$ (this is how $\pi^0\weq0$ appears for $A_0$). The regular block is inverted by solving $\pi^I=p_I(v)$ for the velocities, and the canonical Hamiltonian density is $\mathcal H=\sum\pi^Iv_I-\mathcal L$ evaluated on the solution. The code refuses a velocity-dependent Hessian (e.g.\ Born--Infeld) because the inversion is then not algebraic in general.
+
+\paragraph{Brackets.} Functional derivatives $\delta F/\delta\varphi$ are taken with spatial integration by parts only (time derivatives are kept as independent). The bracket \code{bracket(F, G)} returns the integrand of \cref{eq:PB}; two densities have a vanishing bracket if the integrand is a total spatial divergence, which \code{is\_divergence} detects by testing that all functional derivatives of the integrand vanish. Constraints are \emph{smeared} with arbitrary test functions $\xi(x),\eta(x)$ so that brackets of local densities are meaningful.
+
+\paragraph{Dirac--Bergmann.} \code{dirac\_analysis} iterates the algorithm of \cref{sec:fw-dirac}. For each constraint $\phi_a$ it evaluates $\{\phi_a,H_c\}$ on the primary-constraint surface; if $\phi_a$ fails to commute with some primary constraint the condition fixes a multiplier and no new constraint arises, otherwise a non-vanishing remainder (after solving earlier constraints for a pivot momentum derivative) becomes a new secondary constraint. Once the list is complete, the bracket matrix between all constraints is computed on the constraint surface; a constraint is \emph{second class} if some bracket with it is non-zero (modulo total derivatives and the pivot reduction) and \emph{first class} otherwise. The degrees of freedom follow from \cref{eq:dof}. The algorithm is bounded by a maximum number of rounds (default three), which covers all textbook theories we tested (up to tertiary constraints).
+
+\subsection{Waves and dispersion relations}
+\label{sec:waves-impl}
+
+\code{linearize(model, E, background)} substitutes $\varphi_I=\bar\varphi_I+\epsilon\,\psi_I$ into the equation-of-motion expressions, expands to $\order\epsilon$ and returns the linear expressions together with the perturbation functions $\psi_I$ (named \texttt{d\_<field>}). The background may depend on position, e.g.\ $\bar A_y=B_0x$ for a constant magnetic field (\cref{ex:eh}), provided the coefficients in the linearised equations are constant at the wave-vector of interest. \code{PlaneWave} substitutes $\psi_I\to a_I\ee^{-\ii(\omega t-\vect k\cdot\vect x)}$ and reads off the matrix $K$ column by column; in Euclidean signature the phase is $\ee^{\ii\vect k\cdot\vect x}$. \code{dispersion} returns $K$, its determinant (factored), the roots in $\omega$ and the rank. If $\det K\equiv0$ and the rank is $r>0$, it forms all $r\times r$ minors of $K$, factors them and takes their \emph{greatest common divisor}: this is the polynomial whose zero locus is exactly where the rank falls below its generic value, i.e.\ the physical dispersion relation (\code{pdet}). An earlier implementation used the \emph{sum} of the minors and produced spurious roots; the gcd resolves this. The method captures the divisorial part of the rank-drop locus, which suffices for the theories we treat but is not a complete characterisation in general.
+
+\subsection{Gauge theory}
+\label{sec:gauge-impl}
+
+\paragraph{Lie algebras.} \code{LieAlgebra.su(N)} builds the generalised Gell-Mann matrices, normalised to $\tr(T^aT^b)=\tfrac12\delta^{ab}$, and computes the structure constants $f^{abc}=-2\ii\,\tr([T^a,T^b]T^c)$ exactly; \code{u1()} gives the one-dimensional abelian algebra. The class exposes the Jacobi identity check, the adjoint matrices $(T^a_{\mathrm{adj}})_{bc}=-\ii f^{abc}$ and the quadratic Casimir ($C_F=(N^2-1)/2N$: $3/4$ for $\mathrm{SU}(2)$, $4/3$ for $\mathrm{SU}(3)$).
+
+\paragraph{\code{GaugeTheory}.} \code{add\_group(name, algebra, coupling, strength=...)} registers a gauge field $A^a_\mu$ with adjoint index family, a coupling constant (a symbol, e.g.\ \texttt{g} or \texttt{g'}), and the field strength tensor of \cref{eq:DF} under a name (default \texttt{F}) that becomes available to the parser. \code{add\_matter(name, n, reps, \dots)} declares an $n$-component multiplet, each gauge factor assigned a representation: \texttt{"fund"} (the defining representation), \texttt{"adj"}, a rational number (the charge under a $\mathrm U(1)$ factor) or an explicit matrix list. Spinors request a Dirac gamma-matrix representation. The parser's \verb|D_\mu| then acts on an operand by looking at its own representation data: on a multiplet it subtracts $\ii g\sum_{\text{groups}}A^a_\mu T^a_R$ for each factor, on an adjoint index it adds $gf^{abc}A^b_\mu(\cdot)^c$, and on a gauge-neutral field it reduces to $\pd_\mu$. Several factors compose, which is how $\mathrm{SU}(2)_L\times\mathrm U(1)_Y$ is built (\cref{ex:ew}).
+
+\paragraph{Gauge variations and masses.} \code{gauge\_parameters(name)} returns arbitrary functions $\alpha^a(x)$; \code{gauge\_variation} turns them into a variation dictionary $\delta A^a_\mu=g^{-1}\pd_\mu\alpha^a+f^{abc}A^b_\mu\alpha^c$ and $\delta\phi=\ii\alpha^aT^a\phi$ for every matter multiplet, which can be passed directly to \code{symmetry\_defect} to test local invariance. \code{gauge\_mass\_matrix(L, vev)} returns the matrix $M^2_{ij}=\pd^2\mathcal L/\pd A_i^0\pd A_j^0$ at the vacuum \code{vev}, whose eigenvalues are the squared vector masses (the zero eigenvalues count unbroken generators) together with the basis labels.
+
+\subsection{Expressing results covariantly: \code{fit}}
+\label{sec:fit}
+
+Component output such as $E^\nu$ for all four values of $\nu$ is correct but unreadable. \code{fit(model, target, basis)} receives a target tensor and a dictionary of named \LaTeX{} building blocks with the same free indices and returns coefficients $c_i$ such that $\text{target}=\sum_ic_i\,\text{block}_i$ componentwise, or \code{None} if no such combination exists. The implementation replaces each distinct derivative and function appearing in the components by a dummy symbol, treats the residual as a polynomial in these dummies, and solves for the $c_i$ the linear system obtained by equating all polynomial coefficients. Since \code{sympy.solve} silently ignores equations that do not involve the unknowns, the solution is \emph{re-substituted into every equation} and rejected if any residual remains. (An earlier version lacked this check and falsely accepted targets with extra terms; the negative-control test in the suite was added for this reason.) Examples of use appear throughout \cref{part:examples}: $\delta S/\delta A_\nu=\pd_\mu F^{\mu\nu}$ for Maxwell, $(\Box+\dots)$ for Podolsky, and the Belinfante relation.
+
+\subsection{Grading}
+\label{sec:grading}
+
+The \code{teaching} module offers three graders returning a \code{Grade} object (truthy when correct, with a message).
+\begin{itemize}[nosep]
+\item \code{grade\_identity(model, text)} verifies a claimed identity \texttt{lhs = rhs} via \code{check}.
+\item \code{grade\_field\_equation(model, L, submitted, field)} derives the correct equation of motion from $\mathcal L$ and uses \code{fit} to test whether the submission is a non-zero multiple of it. By default overall factors (including sign) are accepted, since equations of motion are defined up to normalisation; \code{allow\_overall\_factor=False} demands an exact match, and the message reports the factor when it is not $1$. Submitted strings may be written as \texttt{expr = 0}, \texttt{lhs = rhs}, or just \texttt{expr}.
+\item \code{grade\_conserved\_current(model, L, variations, submitted, K)} computes the Noether current for the given symmetry and compares it with the submitted current.
+\end{itemize}
+Parse and index errors are caught and reported as ``could not evaluate'', so the module is robust against malformed submissions. It never passes student input to Python's \code{eval}.
+
+\subsection{Testing and validation}
+\label{sec:testing}
+
+The repository contains $71$ automated tests: $53$ fast unit and integration tests organised by module (parser, tensors, variational calculus, Noether, Hamiltonian/waves, gauge, grading), and $18$ tests that run each example script and assert that no check printed \texttt{[FAIL]}. The unit tests include
+\begin{itemize}[nosep]
+\item parser tests: numbers and fractions, implicit multiplication, derivative scope, Einstein summation, $\Box$, $\epsilon$ and $\delta$, conjugation, strict-mode rejection of a repeated lower index, and error reporting;
+\item tensor tests: raising and lowering in both signatures, symmetry predicates, Levi-Civita conventions, plain summation of spatial indices, and the covariant divergence of a vector on a curved background;
+\item known results as oracles: the Klein--Gordon Hamiltonian, the Maxwell ($2$ dof) and Proca ($3$ dof, second class) canonical structure and dispersion, the electroweak masses, $T^{00}=\tfrac12(E^2+B^2)$ via the Hilbert tensor, the Belinfante relation, and the Dirac equation derived from the QED action;
+\item negative controls: a non-symmetry is rejected by \code{noether\_current}, a wrong sign convention for the gauge field is detected as a non-invariance, the dilatation defect of a massive scalar is exactly $m^2\phi^2$, the grader rejects a wrong mass sign, and \code{fit} returns \code{None} for targets outside the span.
+\end{itemize}
+In addition, the examples exercise the library on problems with analytic answers that are not special-cased anywhere in the code: for instance the BPST action $8\pi^2/g^2$ and unit topological charge, or the monopole mass $4\pi v/g$ obtained by numerical quadrature of the energy density. Bugs found by this approach during development included mis-scoped derivatives, a spurious dispersion root, wrong sign conventions in the Higgs potential, and a vacuous symmetry test (above); each now has a regression test.
+
+\subsection{Performance}
+\label{sec:perf}
+
+The cost is dominated by SymPy simplification of component expressions. On a single core of a cloud virtual machine, the fast unit suite takes about one minute and the full example suite about five minutes. Per-example wall-clock times are listed in \cref{tab:timings}; the sequential total is about $310$\,s. The $\mathrm{SU}(2)$ Yang--Mills Lagrangian expands to $180$ terms and its local gauge invariance is verified in about six seconds; the $\mathrm{SU}(3)$ Lagrangian has $1650$ terms. These figures illustrate the scaling; they are not a benchmark. The cost of component expansion grows as $d^{\,n_{\text{contracted}}}\dim(G)^{\,n_{\text{adj}}}$ for an expression with that many contracted spacetime and adjoint indices, which is why $\mathrm{SU}(N)$ with $N\ge4$ is slow.
+
+\subsection{Availability}
+\label{sec:avail}
+
+The source is released under the MIT licence at \url{https://github.com/nikola-m/fieldsmith}. Installation is by \code{pip install -e .}; the only dependencies are SymPy and mpmath. The repository contains the library, the eighteen examples, the tests, the user guide, a teaching guide with a twelve-week syllabus and exercises, and the scripts that regenerate the example gallery and every number quoted in this paper (\cref{app:repro}).

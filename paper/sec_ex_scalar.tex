@@ -1,0 +1,124 @@
+\section{Worked examples}
+\label{part:examples}
+
+The eighteen examples below are the scripts in the \texttt{examples/} directory of the repository. Each follows the same pattern: the physical \emph{background} needed to understand the problem; the essential \emph{code} (the listings in this document are complete and were executed to produce the output quoted); the \emph{results} and their interpretation; and a suggested \emph{extension}. The full scripts contain further checks, each printed as \texttt{[PASS]} or \texttt{[FAIL]}; all examples pass in the released version, and their complete output is in the generated gallery. The examples are ordered roughly by sophistication; the grouping is thematic. Read in sequence, the backgrounds amount to a short introduction to classical field theory, from the scalar field to non-abelian monopoles.
+
+\subsection{Scalar fields and solitons}
+
+\exheading{ex:kg}{The Klein--Gordon field}{01\_klein\_gordon.py}{elementary}
+
+\paragraph{Background.} The simplest relativistic field theory is a real scalar field $\phi(x)$ with
+\begin{equation}
+\mathcal L=\tfrac12\pd_\mu\phi\,\pd^\mu\phi-\tfrac12m^2\phi^2.
+\label{eq:KG}
+\end{equation}
+The EL expression \cref{eq:EL} is $E=-(\Box\phi+m^2\phi)$, so the field equation is the Klein--Gordon equation $(\Box+m^2)\phi=0$. Plane waves $\phi\propto\ee^{-\ii(\omega t-\vect k\cdot\vect x)}$ solve it if $\omega^2=\vect k^2+m^2$, the relativistic mass shell; $m$ is the mass of the quanta in the quantum theory. Translation invariance gives the canonical tensor \cref{eq:Tcan},
+\begin{equation}
+T^\mu{}_\nu=\pd^\mu\phi\,\pd_\nu\phi-\delta^\mu_\nu\mathcal L,\qquad T^0{}_0=\tfrac12\big(\dot\phi^2+|\nabla\phi|^2+m^2\phi^2\big),
+\end{equation}
+whose $T^0{}_0$ is the energy density (positive-definite) and $T^i{}_0=-\dot\phi\,\pd_i\phi$ the energy flux. In the Hamiltonian description the momentum conjugate to $\phi$ is $\pi=\dot\phi$, the Hamiltonian density is $\mathcal H=\tfrac12\pi^2+\tfrac12|\nabla\phi|^2+\tfrac12m^2\phi^2$, and Hamilton's equations $\dot\phi=\delta H/\delta\pi=\pi$, $\dot\pi=-\delta H/\delta\phi=\nabla^2\phi-m^2\phi$ reproduce the second-order equation.
+
+In the library:
+\lstinputlisting{snippets/s01_kg.py}
+
+\paragraph{Results.} The EL expression comes out as $-m^2\phi-\pd_t^2\phi+\nabla^2\phi$, i.e.\ $-(\Box+m^2)\phi$. The linearisation and plane-wave substitution give $\det K=\omega^2-\vect k^2-m^2$ with roots $\omega=\pm\sqrt{\vect k^2+m^2}$. The canonical tensor component printed is $\tfrac12(m^2\phi^2+\dot\phi^2+|\nabla\phi|^2)$, and the Hamiltonian is written in terms of the momentum function \texttt{p[phi]}. The full example additionally asserts $E=-(\Box\phi+m^2\phi)$ via the parser and prints Hamilton's equations.
+
+\paragraph{Extension.} Add a $\tfrac{\lambda}{4!}\phi^4$ term, repeat the analysis, and show that the dispersion relation of small oscillations about $\phi=0$ is unchanged while that about a non-zero background acquires a mass shift $\tfrac\lambda2\bar\phi^2$.
+
+\exheading{ex:kink}{Solitons in $1{+}1$ dimensions: the $\phi^4$ kink and sine-Gordon}{02\_kink\_and\_sine\_gordon.py}{elementary}
+
+\paragraph{Background.} In one space dimension, nonlinear scalar theories can have finite-energy, localised, static solutions called \emph{solitons} or \emph{kinks}. Consider
+\begin{equation}
+\mathcal L=\tfrac12(\pd\phi)^2-V(\phi),\qquad V=\tfrac\lambda4\Big(\phi^2-\tfrac{m^2}{\lambda}\Big)^2,
+\end{equation}
+which has two degenerate vacua $\phi=\pm v$, $v=m/\sqrt\lambda$. Finite energy requires the field to approach vacua at $x\to\pm\infty$; a solution interpolating between the two is topologically stable because it cannot be deformed to a vacuum without infinite cost, and carries the conserved topological charge $Q=[\phi(\infty)-\phi(-\infty)]/2v$. For static fields the energy is $E=\int\dd x\,[\tfrac12\phi'^2+V]$. Completing the square,
+\begin{equation}
+E=\int\dd x\,\tfrac12\big(\phi'\mp\sqrt{2V}\big)^2\pm\int\dd x\,\sqrt{2V}\,\phi'\ \ge\ \Big|\int_{-v}^{v}\sqrt{2V(\phi)}\,\dd\phi\Big|,
+\label{eq:bogomolny1d}
+\end{equation}
+the \emph{Bogomolny bound} \cite{Bogomolny1976}, saturated by solutions of the first-order equation $\phi'=\pm\sqrt{2V}$. For the potential above, $\sqrt{2V}=\sqrt{\lambda/2}\,(v^2-\phi^2)$, the solution is the kink $\phi=v\tanh(mx/\sqrt2)$ and the bound gives the kink mass $M_K=2\sqrt2\,m^3/(3\lambda)$. A different potential, $V=1-\cos\phi$, gives the sine-Gordon equation $\phi_{tt}-\phi_{xx}+\sin\phi=0$, a completely integrable system with exact solutions: the (Lorentz-boosted) soliton $\phi=4\arctan\exp[\gamma(x-ut)]$ and the oscillating bound state, the \emph{breather}, $\phi=4\arctan\!\big[\tfrac{\sqrt{1-\omega^2}}{\omega}\sin(\omega t)/\cosh(\sqrt{1-\omega^2}\,x)\big]$ \cite{Rajaraman}.
+
+In the library:
+\lstinputlisting{snippets/s02_kink.py}
+
+\paragraph{Results.} \code{check\_solution} returns \texttt{True}: the kink solves the full second-order EOM $-\lambda\phi^3+m^2\phi-\ddot\phi+\phi''=0$ exactly. The example also integrates $\int\sqrt{2V}\,\dd\phi$ symbolically to obtain $2\sqrt2m^3/3\lambda$, evaluates the energy density of the kink, $m^4/[2\lambda\cosh^4(mx/\sqrt2)]$ and integrates it over $x$, recovering the same number, which confirms the Bogomolny saturation. For sine-Gordon, with transcendental profiles, the residual is evaluated numerically at random points; the boosted soliton and the breather pass, and a soliton with the wrong velocity is rejected (negative control).
+
+\paragraph{Extension.} Obtain the Bogomolny equation for a new potential (e.g.\ $V=\tfrac12(W')^2$ for a superpotential $W$) and verify that its solution satisfies the second-order equation.
+
+\subsection{Abelian gauge fields}
+
+\exheading{ex:maxwell}{Maxwell electrodynamics}{03\_maxwell.py}{intermediate}
+
+\paragraph{Background.} The electromagnetic field is described by a four-potential $A_\mu$ with field strength $F_{\mu\nu}=\pd_\mu A_\nu-\pd_\nu A_\mu$ and
+\begin{equation}
+\mathcal L=-\tfrac14F_{\mu\nu}F^{\mu\nu}-J^\mu A_\mu,\qquad
+-\tfrac14F_{\mu\nu}F^{\mu\nu}=\tfrac12(\vect E^2-\vect B^2),
+\end{equation}
+with $E_i=F_{i0}$ and $B_i=\tfrac12\epsilon_{ijk}F_{jk}$ in the conventions of the library. (Compared with the textbook fields $\vect E=-\nabla A^0-\pd_t\vect A$ and $\vect B=\nabla\times\vect A$, both carry an overall minus sign, which is immaterial for the quadratic combinations $\vect E^2\pm\vect B^2$ and $\vect E\!\cdot\!\vect B$ that occur below.) The EL expression is $\delta S/\delta A_\nu=\pd_\mu F^{\mu\nu}-J^\nu$, i.e.\ $\pd_\mu F^{\mu\nu}=J^\nu$ (Gauss's and Amp\`ere's laws). Two structural facts are essential. First, $F$ is automatically closed, $\pd_{[\mu}F_{\nu\rho]}=0$ (the Bianchi identity, i.e.\ the homogeneous Maxwell equations $\nabla\!\cdot\!\vect B=0$, $\nabla\times\vect E=-\pd_t\vect B$), equivalently $\pd_\mu\dual F^{\mu\nu}=0$ with $\dual F^{\mu\nu}=\tfrac12\epsilon^{\mu\nu\rho\sigma}F_{\rho\sigma}$. Second, the action is invariant under $A_\mu\to A_\mu+\pd_\mu\alpha$ with arbitrary $\alpha(x)$---a \emph{gauge} symmetry, whose Noether identity $\pd_\nu\pd_\mu F^{\mu\nu}\equiv0$ implies current conservation $\pd_\nu J^\nu=0$. The symmetric, gauge-invariant (Hilbert) energy--momentum tensor is $T^{\mu\nu}=-F^{\mu\alpha}F^\nu{}_\alpha+\tfrac14g^{\mu\nu}F^2$, with $T^{00}=\tfrac12(\vect E^2+\vect B^2)$, traceless in four dimensions (conformal invariance of Maxwell theory).
+
+Canonically, $\pi^0=\pd\mathcal L/\pd\dot A_0=0$ is a primary constraint (no velocity of $A_0$ appears) and $\pi^i=-F^{0i}$ gives $\mathcal H=\tfrac12(\pi^2+\vect B^2)-A_0\,\nabla\!\cdot\!\vect\pi$; preservation of $\pi^0\weq0$ gives the secondary constraint $\nabla\!\cdot\!\vect\pi\weq0$ (Gauss's law). Both are first class and generate the gauge transformations, so with $N=4$, $N_1=2$, \cref{eq:dof} gives $n_{\mathrm{dof}}=2$: the two photon polarisations.
+
+The listing from the introduction (\texttt{s03\_maxwell.py}) is reproduced here:
+\lstinputlisting{snippets/s03_maxwell.py}
+The remaining checks of the full example are: gauge invariance (\code{symmetry\_defect} for $\delta A_\mu=\pd_\mu\alpha$ returns $0$), the stress tensor ($T^{00}=\tfrac12(E^2+B^2)$ with $E,B$ built from components of $F$; traceless; symmetric), and the wave matrix.
+
+\paragraph{Results.}
+\begin{itemize}[nosep]
+\item \code{fit} returns $\{\texttt{dF}: 1\}$: the EL expression is exactly $\pd_\mu F^{\mu\nu}$; with the source term $-J^\mu A_\mu$ it returns $\{\texttt{dF}:1,\ \texttt{J}:-1\}$.
+\item Bianchi, its dual form and $\pd_\nu\pd_\mu F^{\mu\nu}=0$ are verified.
+\item The Hilbert tensor satisfies $T^{00}=\tfrac12(\vect E^2+\vect B^2)$, is traceless and symmetric, while the canonical $T^0{}_0$ differs from it (they differ by a total derivative and a term vanishing on shell, \cref{ex:stress}).
+\item The $4\times4$ plane-wave matrix has rank $3$ (not $4$): the null direction $a_\mu\propto k_\mu$ is pure gauge.
+\item The Dirac analysis reports $4$ canonical pairs, $2$ first-class constraints, $0$ second-class and $2$ degrees of freedom; the constraints are $\pi^0\weq0$ (primary) and $\pd_i\pi^i\weq0$ (secondary).
+\end{itemize}
+
+\paragraph{Extension.} Add a Chern--Simons-like term or a mass term and watch the first-class constraints turn second class (\cref{ex:proca}).
+
+\exheading{ex:proca}{Massive vector fields: Proca and St\"uckelberg}{04\_proca\_stueckelberg.py}{intermediate}
+
+\paragraph{Background.} Giving the photon a mass breaks gauge invariance explicitly. The Proca Lagrangian \cite{Proca1936} is
+\begin{equation}
+\mathcal L=-\tfrac14F_{\mu\nu}F^{\mu\nu}+\tfrac12m^2A_\mu A^\mu,\qquad
+\pd_\mu F^{\mu\nu}+m^2A^\nu=0.
+\end{equation}
+Taking the divergence, $m^2\pd_\nu A^\nu=0$: the Lorenz condition is a \emph{consequence} of the equation (not a gauge choice), and each component then satisfies $(\Box+m^2)A^\nu=0$, i.e.\ the mass shell with three independent polarisations (the transverse ones plus a longitudinal mode that Maxwell theory lacks). Canonically the mass term gives the secondary constraint $m^2A_0+\nabla\!\cdot\!\vect\pi\weq0$, which no longer commutes with $\pi^0\weq0$: both are second class, $N_2=2$ and $n_{\mathrm{dof}}=3$. Gauge invariance can be restored by introducing a scalar $\theta$ \cite{Stueckelberg1938},
+\begin{equation}
+\mathcal L=-\tfrac14F_{\mu\nu}F^{\mu\nu}+\tfrac12(mA_\mu-\pd_\mu\theta)(mA^\mu-\pd^\mu\theta),
+\end{equation}
+invariant under $\delta A_\mu=\pd_\mu\alpha$, $\delta\theta=m\alpha$. In the gauge $\theta=0$ (``unitary gauge'') the Proca theory is recovered, and the longitudinal polarisation is revealed as the scalar $\theta$, ``eaten'' by the photon. This is the abelian prototype of the Higgs mechanism (\cref{ex:higgs}).
+
+In the library:
+\lstinputlisting{snippets/s04_proca.py}
+
+\paragraph{Results.} \code{fit} gives $\text{EL}=1\cdot\pd_\mu F^{\mu\nu}+1\cdot m^2A^\nu$, and the identity $\pd_\nu E^\nu\propto m^2\pd_\nu A^\nu$ is checked. The plane-wave determinant is $-m^2(\omega^2-\vect k^2-m^2)^3$ up to sign, so the mass-shell factor appears with exponent $3$: three polarisations. The Dirac analysis finds two second-class constraints and $3$ degrees of freedom. In the St\"uckelberg form, $\delta L=0$ under the combined transformation, there are $5$ canonical pairs, $2$ first-class constraints and $0$ second-class, and again $n_{\mathrm{dof}}=(10-4)/2=3$: the same physics in a gauge-invariant disguise.
+
+\paragraph{Extension.} Couple the St\"uckelberg scalar to a conserved current and show that its longitudinal contribution to the exchange amplitude decouples as $m\to0$.
+
+\exheading{ex:higgs}{Scalar QED and the abelian Higgs mechanism}{05\_abelian\_higgs.py}{intermediate}
+
+\paragraph{Background.} A charged scalar $\Phi$ minimally coupled to the photon has the Lagrangian
+\begin{equation}
+\mathcal L=-\tfrac14F_{\mu\nu}F^{\mu\nu}+(D_\mu\Phi)^\dagger D^\mu\Phi+\mu^2\Phi^\dagger\Phi-\lambda(\Phi^\dagger\Phi)^2,\qquad D_\mu=\pd_\mu-\ii eA_\mu,
+\end{equation}
+invariant under the local $\mathrm U(1)$: $\Phi\to\ee^{\ii\alpha(x)}\Phi$, $A_\mu\to A_\mu+e^{-1}\pd_\mu\alpha$. The Noether current of the corresponding \emph{global} symmetry is the electromagnetic current, which appears on the right-hand side of Maxwell's equations: $\pd_\mu F^{\mu\nu}=-e\,j^\nu$, where $j^\mu=\ii\big(\Phi^\dagger D^\mu\Phi-(D^\mu\Phi)^\dagger\Phi\big)$. For $\mu^2>0$ the potential $V=-\mu^2|\Phi|^2+\lambda|\Phi|^4$ has a minimum away from zero, $|\Phi|^2=\mu^2/2\lambda$, and the symmetry is spontaneously broken: writing $\Phi=(v+h+\ii G)/\sqrt2$ with $v=\mu/\sqrt\lambda$, the real field $h$ has mass$^2$ $2\mu^2$, while $G$, the would-be Goldstone boson, mixes with the photon through $e\,v\,A^\mu\pd_\mu G$ (from the kinetic term). Choosing the unitary gauge $G=0$ removes $G$ and leaves a vector with mass $M_A=ev$ and a massive Higgs scalar \cite{Higgs1964,EnglertBrout1964,GHK1964}. Degrees of freedom are conserved: $2$ (photon) $+\,2$ (complex scalar) $\to 3$ (massive vector) $+\,1$ (Higgs).
+
+In the library:
+\lstinputlisting{snippets/s05_higgs.py}
+
+\paragraph{Results.} Local invariance is verified ($\delta\mathcal L=0$). The Noether charge density of the global rotation is $J^0=-2eA_0\Phi\Phi^*+\ii(\Phi\dot\Phi^*-\Phi^*\dot\Phi)$ (in components) and the Noether identity holds. \code{fit} gives $\pd_\mu F^{\mu\nu}+e\,j^\nu$ for the photon equation. After substituting the vacuum, the coefficient of $A_x\pd_xG$ in $\mathcal L$ is $e(v+h)$ as expected. In the unitary gauge the plane-wave determinant factorises as $(\omega^2-\vect k^2-2\mu^2)\,[\omega^2-\vect k^2-e^2\mu^2/\lambda]^3$ (up to an overall constant), so the physical masses squared are $2\mu^2$ and $e^2\mu^2/\lambda=(ev)^2$ with multiplicities $1$ and $3$; the degree-of-freedom count is $4$ before and after.
+
+\paragraph{Extension.} Obtain the vortex (Nielsen--Olesen) equations by assuming an axially symmetric ansatz and check the Bogomolny equations at $\lambda=e^2/2$.
+
+\exheading{ex:goldstone}{The $\mathrm O(N)$ model and Goldstone's theorem}{06\_goldstone\_O\_N.py}{intermediate}
+
+\paragraph{Background.} Goldstone's theorem \cite{Goldstone1961} states that for each broken generator of a continuous global symmetry there is a massless scalar. Take $N$ real scalars $\phi_p$ with
+\begin{equation}
+\mathcal L=\tfrac12\pd_\mu\phi_p\pd^\mu\phi_p+\tfrac{\mu^2}2\phi_p\phi_p-\tfrac\lambda4(\phi_p\phi_p)^2,
+\end{equation}
+invariant under $\mathrm O(N)$, with $N(N-1)/2$ generators. The vacuum manifold is the sphere $|\vec\phi|=v=\mu/\sqrt\lambda$; choosing a point, e.g.\ $\vec\phi=(0,\dots,0,v)$, breaks $\mathrm O(N)\to\mathrm O(N-1)$, so $\tfrac{N(N-1)}2-\tfrac{(N-1)(N-2)}2=N-1$ generators are broken. The mass matrix at the vacuum, $M^2_{pq}=\pd^2V/\pd\phi_p\pd\phi_q$, has one eigenvalue $2\mu^2$ (the radial ``Higgs'' mode) and $N-1$ zero eigenvalues (Goldstones). The Noether currents for the $N(N-1)/2$ rotations are $J^\mu_{pq}=\phi_p\pd^\mu\phi_q-\phi_q\pd^\mu\phi_p$.
+
+\paragraph{In the library.} The index family $p,q,\dots$ is a user-defined index space; one Lagrangian string serves for any $N$.
+\lstinputlisting{snippets/s06_on.py}
+
+\paragraph{Results.} For $N=2,3,4$ the example reports $1,3,6$ conserved currents; $1,2,3$ broken generators (those that move the vacuum); and mass spectra $\{0:1,\,2\mu^2:1\}$, $\{0:2,\,2\mu^2:1\}$, $\{0:3,\,2\mu^2:1\}$. Thus the number of massless Goldstone bosons equals $\dim\mathrm O(N)/\mathrm O(N-1)=N-1$ in each case (asserted).
+
+\paragraph{Extension.} Add a small explicit symmetry-breaking term $-\epsilon\phi_N$ and compute the pseudo-Goldstone mass$^2$, $\epsilon/v$.

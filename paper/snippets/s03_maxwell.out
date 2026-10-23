@@ -1,0 +1,8 @@
+{'dF': 1}
+True
+True
+canonical pairs: 4
+first-class constraints: 2, second-class: 0
+physical degrees of freedom per point: 2
+  [primary, first-class]  p[A[0]](t, x, y, z) ~ 0
+  [secondary, first-class]  Derivative(p[A[1]](t, x, y, z), x) + Derivative(p[A[2]](t, x, y, z), y) + Derivative(p[A[3]](t, x, y, z), z) ~ 0

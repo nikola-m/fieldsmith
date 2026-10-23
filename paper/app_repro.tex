@@ -1,0 +1,22 @@
+\section{Reproducing the results}
+\label{app:repro}
+
+Every listing in \cref{part:examples} was executed against the library, and the output quoted is the printed output (the files \texttt{paper/snippets/s*.py} contain the listings and \texttt{paper/snippets/s*.out} the captured output). The full example scripts are in \texttt{examples/}, and \texttt{tools/build\_gallery.py} regenerates \texttt{docs/gallery.md} with the complete output of all eighteen. The tests are run by
+\begin{lstlisting}[language=bash,frame=single]
+pip install -e ".[test]"
+python -m pytest -m "not slow"     # 53 unit/integration tests (~1 min)
+python -m pytest                    # plus the 18 example scripts (~5 min)
+\end{lstlisting}
+\Cref{tab:timings} gives per-example wall-clock times in the environment used to prepare this paper (a single core of a cloud virtual machine, Python~3 with SymPy~1.14); absolute figures will vary with hardware and SymPy version.
+\begin{table}[H]
+\centering\small
+\begin{tabular}{@{}rlr@{}}
+\toprule
+\# & Example & Time (s) \\
+\midrule
+\input{timings_table}\\
+\bottomrule
+\end{tabular}
+\caption{Wall-clock time for each example script.}
+\label{tab:timings}
+\end{table}

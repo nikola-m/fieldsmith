@@ -1,0 +1,93 @@
+\subsection{Non-abelian gauge theory}
+
+\exheading{ex:ym}{Yang--Mills theory: $\mathrm{SU}(2)$ and $\mathrm{SU}(3)$}{07\_yang\_mills.py}{advanced undergraduate / graduate}
+
+\paragraph{Background.} Yang and Mills \cite{YangMills1954} generalised the abelian gauge principle to non-commuting symmetries. For a compact Lie group with generators $T^a$, $[T^a,T^b]=\ii f^{abc}T^c$, the gauge potential $A_\mu=A_\mu^aT^a$ transforms inhomogeneously and the field strength $F_{\mu\nu}=\pd_\mu A_\nu-\pd_\nu A_\mu-\ii g[A_\mu,A_\nu]$ has components given in \cref{eq:DF}. The non-linear term makes the gauge field \emph{self-interacting}: the Lagrangian $\mathcal L=-\tfrac14F^a_{\mu\nu}F^{a\mu\nu}$ contains cubic and quartic vertices ($\propto g$ and $\propto g^2$). The equation of motion is the covariant Maxwell equation
+\begin{equation}
+D_\mu F^{a\,\mu\nu}=\pd_\mu F^{a\,\mu\nu}+gf^{abc}A^b_\mu F^{c\,\mu\nu}=0,
+\end{equation}
+and the Bianchi identity $D_\mu\dual F^{a\,\mu\nu}=0$ holds identically. The curvature interpretation is encoded in
+\begin{equation}
+[D_\mu,D_\nu]\chi^a=g\,f^{abc}F^b_{\mu\nu}\chi^c
+\label{eq:comm}
+\end{equation}
+for an adjoint field $\chi$. The group $\mathrm{SU}(N)$ has $N^2-1$ generators; in the defining representation $\tr(T^aT^b)=\tfrac12\delta^{ab}$ and the quadratic Casimir is $C_F=(N^2-1)/(2N)$, $3/4$ for $\mathrm{SU}(2)$ and $4/3$ for $\mathrm{SU}(3)$ (the QCD colour factor). A new feature compared with electromagnetism is that the field itself carries charge: the Noether current of the \emph{global} colour symmetry contains the gluon field and is conserved on shell.
+
+In the library:
+\lstinputlisting{snippets/s07_ym.py}
+
+\paragraph{Results.} The library constructs $\mathrm{SU}(2)$ and $\mathrm{SU}(3)$ from their Gell-Mann matrices; the Jacobi identity and the Casimirs $C_F=3/4$ and $4/3$ are verified; the nonzero $f^{abc}$ of $\mathrm{SU}(3)$ come out as $f^{123}=1$, $f^{147}=f^{246}=f^{257}=f^{345}=\tfrac12$, $f^{156}=f^{367}=-\tfrac12$, $f^{458}=f^{678}=\tfrac{\sqrt3}2$, the standard table. The $\mathrm{SU}(2)$ Lagrangian has $180$ terms (kinetic, cubic, quartic) with highest power $g^2$. Local gauge invariance under $\delta A^a_\mu=g^{-1}\pd_\mu\alpha^a+f^{abc}A^b_\mu\alpha^c$ is verified: $\delta\mathcal L=0$ (about six seconds). The EL expression is $D_\mu F^{a\mu\nu}$ with coefficient $1$ (via \code{fit}), the Bianchi identity and the off-shell identity $D_\nu D_\mu F^{a\mu\nu}=0$ are confirmed, and the commutator relation \cref{eq:comm} holds for an adjoint multiplet $\chi$. For $\mathrm{SU}(3)$ the example builds the $8\times4=32$ gauge field components, a Lagrangian with $1650$ terms, and verifies the Bianchi identity.
+
+\paragraph{Extension.} Linearise about the vacuum to show that the gauge bosons are massless with two polarisations, then find a non-trivial constant solution of $D_\mu F^{\mu\nu}=0$ (a ``Wu--Yang'' configuration).
+
+\exheading{ex:ew}{The electroweak Higgs mechanism, $\mathrm{SU}(2)_L\times\mathrm U(1)_Y$}{08\_electroweak.py}{graduate}
+
+\paragraph{Background.} The electroweak theory \cite{Glashow1961,Weinberg1967,Salam1968} has gauge group $\mathrm{SU}(2)_L\times\mathrm U(1)_Y$ with fields $W^a_\mu$ (coupling $g$, field strength $V^a_{\mu\nu}$) and $B_\mu$ (coupling $g'$, field strength $H_{\mu\nu}$), and a Higgs doublet $\Phi$ of hypercharge $Y=\tfrac12$:
+\begin{equation}
+\mathcal L=-\tfrac14V^a_{\mu\nu}V^{a\mu\nu}-\tfrac14H_{\mu\nu}H^{\mu\nu}+(D_\mu\Phi)^\dagger D^\mu\Phi+\mu^2\Phi^\dagger\Phi-\lambda(\Phi^\dagger\Phi)^2,\quad
+D_\mu=\pd_\mu-\ii gW^a_\mu\tfrac{\sigma^a}{2}-\ii g'\tfrac12B_\mu.
+\end{equation}
+Choosing the vacuum $\langle\Phi\rangle=(0,v/\sqrt2)^T$, $v=\mu/\sqrt\lambda$, the kinetic term yields a vector-boson mass term $\tfrac12M^2_{ij}A^i_\mu A^{j\mu}$ in the basis $(W^1,W^2,W^3,B)$ with
+\begin{equation}
+M^2=\frac{v^2}4\begin{pmatrix}g^2&0&0&0\\0&g^2&0&0\\0&0&g^2&-gg'\\0&0&-gg'&g'^2\end{pmatrix}.
+\end{equation}
+The eigenvalues are $M_W^2=g^2v^2/4$ (twice: $W^\pm=(W^1\mp\ii W^2)/\sqrt2$), $M_Z^2=(g^2+g'^2)v^2/4$ and $0$. The massless eigenvector is the photon, $A=\sin\theta_W\,W^3+\cos\theta_W\,B$ with $\tan\theta_W=g'/g$, orthogonal to $Z=\cos\theta_W\,W^3-\sin\theta_W\,B$; the electric charge is $e=g\sin\theta_W=g'\cos\theta_W$. The tree-level relation $\rho\equiv M_W^2/(M_Z^2\cos^2\theta_W)=1$ is a consequence of the custodial $\mathrm{SU}(2)$ symmetry of the Higgs potential. Three of the four real Higgs components are eaten by $W^\pm,Z$; the fourth is the physical Higgs boson.
+
+\paragraph{In the library.} Two gauge factors are added, and the Higgs doublet transforms under both: in the fundamental of $\mathrm{SU}(2)$ and with hypercharge $\tfrac12$.
+\lstinputlisting{snippets/s08_ew.py}
+
+\paragraph{Results.} The full Lagrangian is invariant under the four independent local parameters ($\delta\mathcal L=0$). The mass matrix is exactly the one above, with eigenvalues $\{g^2v^2/4:2,\ (g^2+g'^2)v^2/4:1,\ 0:1\}$. The example asserts two $W$ bosons with $M_W^2=g^2v^2/4$, one $Z$ with $M_Z^2=(g^2+g'^2)v^2/4$ and a massless photon; it extracts $\cos\theta_W=M_W/M_Z=g/\sqrt{g^2+g'^2}$, finds the photon direction as the null vector $(0,0,g'/g,1)$, i.e.\ $A\propto g'W^3+gB$, and verifies $\rho=1$.
+
+\paragraph{Extension.} Add a second Higgs doublet (two-Higgs-doublet model) and compute $\rho$ for different vacuum alignments; add a Higgs triplet with $Y=1$ and show that $\rho\ne1$ at tree level.
+
+\subsection{Matter, energy--momentum and gravity}
+
+\exheading{ex:qed}{Quantum electrodynamics with a classical Dirac field}{09\_qed\_dirac.py}{graduate}
+
+\paragraph{Background.} The Dirac field is a four-component spinor $\psi$ obeying $(\ii\gamma^\mu\pd_\mu-m)\psi=0$, with gamma matrices satisfying $\{\gamma^\mu,\gamma^\nu\}=2g^{\mu\nu}$. Its Lagrangian is $\bar\psi(\ii\gamma^\mu\pd_\mu-m)\psi$ with $\bar\psi=\psi^\dagger\gamma^0$. Coupling to electromagnetism by minimal substitution $\pd_\mu\to D_\mu=\pd_\mu-\ii eA_\mu$ gives
+\begin{equation}
+\mathcal L_{\mathrm{QED}}=\bar\psi(\ii\gamma^\mu D_\mu-m)\psi-\tfrac14F_{\mu\nu}F^{\mu\nu}.
+\end{equation}
+Variation with respect to $\bar\psi$ gives the Dirac equation, and with respect to $A_\nu$ gives $\pd_\mu F^{\mu\nu}=-e\,\bar\psi\gamma^\nu\psi$. The phase rotation $\psi\to\ee^{\ii\alpha}\psi$ yields the Noether current $J^\mu=-\bar\psi\gamma^\mu\psi$ in the sign convention of the library, which is the electromagnetic current (up to sign and the factor $e$). Applying $(\ii\gamma\cdot\pd+m)$ to the Dirac equation gives $-(\Box+m^2)\psi=0$: each component is a Klein--Gordon field. Canonically, the Lagrangian is linear in the velocities, so every momentum is a constraint: $\pi_\psi=\ii\psi^\dagger$ and $\pi_{\psi^\dagger}=0$, all second class. With eight real-equivalent fields $(\psi,\psi^*)$ this leaves $(16-8)/2=4$ degrees of freedom; in the quantum theory these are the two spin states of the particle and of the antiparticle. We treat $\psi$ here as a \emph{classical commuting} field; Fermi statistics enters only in quantisation.
+
+In the library:
+\lstinputlisting{snippets/s09_qed.py}
+
+\paragraph{Results.} Gauge invariance under $\psi\to\ee^{\ii\alpha}\psi$, $A\to A+\pd\alpha/e$ holds ($\delta\mathcal L=0$). The variation with respect to $\psi^\dagger$ equals $\gamma^0(\ii\gamma^\mu D_\mu-m)\psi$ (asserted). \code{fit} gives $\pd_\mu F^{\mu\nu}+e\bar\psi\gamma^\nu\psi$ with unit coefficients. The Noether current equals $-\bar\psi\gamma^\mu\psi$, and the Noether identity holds. The squared Dirac operator gives $-(\Box+m^2)\psi$ (asserted). The canonical analysis of the free Dirac Lagrangian finds $8$ second-class constraints and $4$ degrees of freedom.
+
+\paragraph{Extension.} Add a Pauli term $\tfrac{\kappa}{2}\bar\psi\sigma^{\mu\nu}\psi F_{\mu\nu}$ (anomalous magnetic moment) and read off its contribution to the current.
+
+\exheading{ex:stress}{Energy--momentum tensors: canonical, Belinfante and Hilbert}{10\_stress\_tensors.py}{graduate}
+
+\paragraph{Background.} Translation invariance gives the canonical tensor \cref{eq:Tcan}, which for gauge fields is neither symmetric nor gauge invariant. For the Maxwell field, $T^{\mu\nu}_{\mathrm{can}}=-F^{\mu\alpha}\pd^\nu A_\alpha+\tfrac14g^{\mu\nu}F^2$. The Hilbert tensor \cref{eq:Thilb} is $T^{\mu\nu}_{\mathrm H}=-F^{\mu\alpha}F^\nu{}_\alpha+\tfrac14g^{\mu\nu}F^2$. Their difference is
+\begin{equation}
+T_{\mathrm H}^{\mu\nu}-T_{\mathrm{can}}^{\mu\nu}=F^{\mu\lambda}\pd_\lambda A^\nu=\pd_\lambda\big(F^{\mu\lambda}A^\nu\big)-\big(\pd_\lambda F^{\mu\lambda}\big)A^\nu,
+\label{eq:belinfante}
+\end{equation}
+which is the Belinfante construction \cite{Belinfante1940,Rosenfeld1940}: the second term vanishes on shell (vacuum Maxwell equation) and the first is a total derivative of a quantity antisymmetric in $(\mu,\lambda)$, which does not change the conserved charges $P^\nu$ but makes the tensor gauge invariant and symmetric. A second ambiguity concerns the massless scalar: conformal invariance in $d=4$ is not manifest in $T_{\mathrm{can}}$, whose trace $T^\mu{}_\mu=-(\pd\phi)^2$ does not vanish. The ``improved'' tensor \cite{CallanColemanJackiw1970}
+\begin{equation}
+T^{\mu\nu}_{\mathrm{imp}}=T^{\mu\nu}-\tfrac16\big(\pd^\mu\pd^\nu-g^{\mu\nu}\Box\big)\phi^2
+\end{equation}
+is still conserved and has the same charges but trace $T^\mu{}_\mu\big|_{\mathrm{imp}}=\phi\Box\phi$, which vanishes on shell.
+
+In the library:
+\lstinputlisting{snippets/s10_stress.py}
+
+\paragraph{Results.} The canonical tensor is not symmetric (\texttt{False}), the Hilbert tensor is (\texttt{True}); and \code{fit} returns $\{\texttt{b}:1,\ \texttt{e}:-1\}$, which is \cref{eq:belinfante}. For the scalar, the example prints the two traces: $-\dot\phi^2+|\nabla\phi|^2$ for the ordinary tensor and $\phi\,\Box\phi$ (in components, $\phi(\ddot\phi-\nabla^2\phi)$) for the improved tensor.
+
+\paragraph{Extension.} Compute $T_{\mathrm H}^{\mu\nu}$ of the Proca field and show that the trace is $-m^2A^2$, i.e.\ conformal invariance is broken exactly by the mass.
+
+\exheading{ex:frw}{Fields on curved backgrounds: FRW cosmology and Schwarzschild}{11\_curved\_spacetime.py}{graduate}
+
+\paragraph{Background.} In a curved spacetime the action carries $\sqrt{|g|}$ and derivatives become covariant. For a spatially flat Friedmann--Robertson--Walker universe, $\dd s^2=\dd t^2-a(t)^2\dd\vect x^2$, with Hubble rate $H=\dot a/a$, the Einstein tensor has $G_{00}=3H^2$, and a minimally coupled scalar satisfies
+\begin{equation}
+\ddot\phi+3H\dot\phi-\frac{\nabla^2\phi}{a^2}+m^2\phi=0,
+\end{equation}
+the Klein--Gordon equation with a friction term due to expansion. The energy--momentum tensor $T_{\mu\nu}=\pd_\mu\phi\pd_\nu\phi-g_{\mu\nu}\mathcal L$ is covariantly conserved on shell, $\nabla_\mu T^{\mu\nu}=(\Box\phi+m^2\phi)\pd^\nu\phi$ (with $\Box=\nabla^\mu\nabla_\mu$). For a homogeneous field, the $00$ Einstein equation $G_{00}=8\pi GT_{00}$ is the Friedmann equation $3H^2=8\pi G(\tfrac12\dot\phi^2+\tfrac12m^2\phi^2)$. The Schwarzschild metric is a vacuum solution, $G_{\mu\nu}=0$.
+
+\paragraph{In the library.} The metric is entered as a SymPy matrix; $G_{\mu\nu}$ is computed from the Christoffel symbols and the Riemann tensor.
+\lstinputlisting{snippets/s11_frw.py}
+
+\paragraph{Results.} $G_{00}=3\dot a^2/a^2$ (asserted); the equation of motion equals the one above (asserted); \verb|\nabla_\mu T^{\mu\nu} = (\Box\phi + m^2\phi)\partial^\nu\phi| is verified by \code{check}; the homogeneous energy density is $\tfrac12\dot\phi_h^2+\tfrac12m^2\phi_h^2$, so $G_{00}=8\pi GT_{00}$ is the Friedmann equation. The example also confirms that the Schwarzschild Einstein tensor and Ricci scalar vanish.
+
+\paragraph{Extension.} Derive the equation for tensor perturbations of a scalar-dominated universe, or add a non-minimal coupling $-\tfrac12\xi R\phi^2$ and find the conformal value $\xi=1/6$ at which the massless field is conformally invariant.

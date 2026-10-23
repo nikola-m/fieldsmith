@@ -1,0 +1,233 @@
+\begin{thebibliography}{42}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Peeters(2007)]{Peeters2007}
+Kasper Peeters.
+\newblock Cadabra: a field-theory motivated symbolic computer algebra system.
+\newblock \emph{Comput. Phys. Commun.}, 176:\penalty0 550--558, 2007.
+
+\bibitem[Vermaseren(2000)]{Vermaseren2000}
+J.~A.~M. Vermaseren.
+\newblock New features of {FORM}, 2000.
+
+\bibitem[Mertig et~al.(1991)Mertig, B{\"o}hm, and Denner]{Mertig1991}
+R.~Mertig, M.~B{\"o}hm, and A.~Denner.
+\newblock {FeynCalc} -- computer-algebra calculations for {Feynman} amplitudes.
+\newblock \emph{Comput. Phys. Commun.}, 64:\penalty0 345--359, 1991.
+
+\bibitem[Shtabovenko et~al.(2016)Shtabovenko, Mertig, and
+  Orellana]{Shtabovenko2016}
+V.~Shtabovenko, R.~Mertig, and F.~Orellana.
+\newblock New developments in {FeynCalc} 9.0.
+\newblock \emph{Comput. Phys. Commun.}, 207:\penalty0 432--444, 2016.
+
+\bibitem[Meurer et~al.(2017)]{Meurer2017}
+Aaron Meurer et~al.
+\newblock {SymPy}: symbolic computing in {Python}.
+\newblock \emph{PeerJ Computer Science}, 3:\penalty0 e103, 2017.
+
+\bibitem[Peskin and Schroeder(1995)]{PeskinSchroeder}
+Michael~E. Peskin and Daniel~V. Schroeder.
+\newblock \emph{An Introduction to Quantum Field Theory}.
+\newblock Addison-Wesley, 1995.
+
+\bibitem[Landau and Lifshitz(1975)]{LandauLifshitz}
+L.~D. Landau and E.~M. Lifshitz.
+\newblock \emph{The Classical Theory of Fields}.
+\newblock Pergamon, 4th edition, 1975.
+
+\bibitem[Weinberg(1995)]{WeinbergQFT1}
+Steven Weinberg.
+\newblock \emph{The Quantum Theory of Fields, Volume I: Foundations}.
+\newblock Cambridge University Press, 1995.
+
+\bibitem[Weinberg(1996)]{WeinbergQFT2}
+Steven Weinberg.
+\newblock \emph{The Quantum Theory of Fields, Volume II: Modern Applications}.
+\newblock Cambridge University Press, 1996.
+
+\bibitem[Henneaux and Teitelboim(1992)]{HenneauxTeitelboim}
+Marc Henneaux and Claudio Teitelboim.
+\newblock \emph{Quantization of Gauge Systems}.
+\newblock Princeton University Press, 1992.
+
+\bibitem[Dirac(1950)]{Dirac1950}
+P.~A.~M. Dirac.
+\newblock Generalized {Hamiltonian} dynamics.
+\newblock \emph{Can. J. Math.}, 2:\penalty0 129--148, 1950.
+
+\bibitem[Misner et~al.(1973)Misner, Thorne, and Wheeler]{MTW}
+Charles~W. Misner, Kip~S. Thorne, and John~A. Wheeler.
+\newblock \emph{Gravitation}.
+\newblock W. H. Freeman, 1973.
+
+\bibitem[Ostrogradsky(1850)]{Ostrogradsky1850}
+M.~Ostrogradsky.
+\newblock M{\'e}moires sur les {\'e}quations diff{\'e}rentielles relatives au
+  probl{\`e}me des isop{\'e}rim{\`e}tres.
+\newblock \emph{Mem. Ac. St. Petersbourg}, VI\penalty0 (4):\penalty0 385, 1850.
+
+\bibitem[Woodard(2007)]{Woodard2007}
+Richard~P. Woodard.
+\newblock Avoiding dark energy with 1/{R} modifications of gravity.
+\newblock In \emph{The Invisible Universe: Dark Matter and Dark Energy}, volume
+  720 of \emph{Lect. Notes Phys.}, pages 403--433. 2007.
+
+\bibitem[Bogomol'nyi(1976)]{Bogomolny1976}
+E.~B. Bogomol'nyi.
+\newblock The stability of classical solutions.
+\newblock \emph{Sov. J. Nucl. Phys.}, 24:\penalty0 449--454, 1976.
+
+\bibitem[Rajaraman(1982)]{Rajaraman}
+R.~Rajaraman.
+\newblock \emph{Solitons and Instantons}.
+\newblock North-Holland, 1982.
+
+\bibitem[Proca(1936)]{Proca1936}
+A.~Proca.
+\newblock Sur la th{\'e}orie ondulatoire des {\'e}lectrons positifs et
+  n{\'e}gatifs.
+\newblock \emph{J. Phys. Radium}, 7:\penalty0 347--353, 1936.
+
+\bibitem[St{\"u}ckelberg(1938)]{Stueckelberg1938}
+E.~C.~G. St{\"u}ckelberg.
+\newblock Die wechselwirkungskr{\"a}fte in der elektrodynamik und in der
+  feldtheorie der kernkr{\"a}fte.
+\newblock \emph{Helv. Phys. Acta}, 11:\penalty0 225--244, 1938.
+
+\bibitem[Higgs(1964)]{Higgs1964}
+Peter~W. Higgs.
+\newblock Broken symmetries and the masses of gauge bosons.
+\newblock \emph{Phys. Rev. Lett.}, 13:\penalty0 508--509, 1964.
+
+\bibitem[Englert and Brout(1964)]{EnglertBrout1964}
+F.~Englert and R.~Brout.
+\newblock Broken symmetry and the mass of gauge vector mesons.
+\newblock \emph{Phys. Rev. Lett.}, 13:\penalty0 321--323, 1964.
+
+\bibitem[Guralnik et~al.(1964)Guralnik, Hagen, and Kibble]{GHK1964}
+G.~S. Guralnik, C.~R. Hagen, and T.~W.~B. Kibble.
+\newblock Global conservation laws and massless particles.
+\newblock \emph{Phys. Rev. Lett.}, 13:\penalty0 585--587, 1964.
+
+\bibitem[Goldstone(1961)]{Goldstone1961}
+J.~Goldstone.
+\newblock Field theories with ``superconductor'' solutions.
+\newblock \emph{Nuovo Cimento}, 19:\penalty0 154--164, 1961.
+
+\bibitem[Yang and Mills(1954)]{YangMills1954}
+C.~N. Yang and R.~L. Mills.
+\newblock Conservation of isotopic spin and isotopic gauge invariance.
+\newblock \emph{Phys. Rev.}, 96:\penalty0 191--195, 1954.
+
+\bibitem[Glashow(1961)]{Glashow1961}
+Sheldon~L. Glashow.
+\newblock Partial-symmetries of weak interactions.
+\newblock \emph{Nucl. Phys.}, 22:\penalty0 579--588, 1961.
+
+\bibitem[Weinberg(1967)]{Weinberg1967}
+Steven Weinberg.
+\newblock A model of leptons.
+\newblock \emph{Phys. Rev. Lett.}, 19:\penalty0 1264--1266, 1967.
+
+\bibitem[Salam(1968)]{Salam1968}
+Abdus Salam.
+\newblock Weak and electromagnetic interactions.
+\newblock In N.~Svartholm, editor, \emph{Elementary Particle Theory (Nobel
+  Symposium No.~8)}, pages 367--377. Almqvist \& Wiksell, Stockholm, 1968.
+
+\bibitem[Belinfante(1940)]{Belinfante1940}
+F.~J. Belinfante.
+\newblock On the current and the density of the electric charge, the energy,
+  the linear momentum and the angular momentum of arbitrary fields.
+\newblock \emph{Physica}, 7:\penalty0 449--474, 1940.
+
+\bibitem[Rosenfeld(1940)]{Rosenfeld1940}
+L.~Rosenfeld.
+\newblock Sur le tenseur d'impulsion-{\'e}nergie.
+\newblock \emph{M{\'e}m. Acad. Roy. Belg. Sci.}, 18\penalty0 (6), 1940.
+
+\bibitem[Callan et~al.(1970)Callan, Coleman, and
+  Jackiw]{CallanColemanJackiw1970}
+Curtis~G. Callan, Sidney Coleman, and Roman Jackiw.
+\newblock A new improved energy-momentum tensor.
+\newblock \emph{Ann. Phys.}, 59:\penalty0 42--73, 1970.
+
+\bibitem[Wilczek(1987)]{Wilczek1987}
+Frank Wilczek.
+\newblock Two applications of axion electrodynamics.
+\newblock \emph{Phys. Rev. Lett.}, 58:\penalty0 1799--1802, 1987.
+
+\bibitem[Carroll et~al.(1990)Carroll, Field, and
+  Jackiw]{CarrollFieldJackiw1990}
+Sean~M. Carroll, George~B. Field, and Roman Jackiw.
+\newblock Limits on a {Lorentz}- and parity-violating modification of
+  electrodynamics.
+\newblock \emph{Phys. Rev. D}, 41:\penalty0 1231--1240, 1990.
+
+\bibitem[Euler and Heisenberg(1936)]{EulerHeisenberg1936}
+H.~Euler and W.~Heisenberg.
+\newblock Folgerungen aus der {Diracschen} theorie des {Positrons}.
+\newblock \emph{Z. Phys.}, 98:\penalty0 714--732, 1936.
+
+\bibitem[Bialynicka-Birula and Bialynicki-Birula(1970)]{BialynickaBirula1970}
+Z.~Bialynicka-Birula and I.~Bialynicki-Birula.
+\newblock Nonlinear effects in quantum electrodynamics. {Photon} propagation
+  and photon splitting in an external field.
+\newblock \emph{Phys. Rev. D}, 2:\penalty0 2341--2345, 1970.
+
+\bibitem[Adler(1971)]{Adler1971}
+Stephen~L. Adler.
+\newblock Photon splitting and photon dispersion in a strong magnetic field.
+\newblock \emph{Ann. Phys.}, 67:\penalty0 599--647, 1971.
+
+\bibitem[Podolsky(1942)]{Podolsky1942}
+Boris Podolsky.
+\newblock A generalized electrodynamics. {Part I} -- non-quantum.
+\newblock \emph{Phys. Rev.}, 62:\penalty0 68--71, 1942.
+
+\bibitem[Deser et~al.(1982{\natexlab{a}})Deser, Jackiw, and
+  Templeton]{DeserJackiwTempleton1982a}
+S.~Deser, R.~Jackiw, and S.~Templeton.
+\newblock Three-dimensional massive gauge theories.
+\newblock \emph{Phys. Rev. Lett.}, 48:\penalty0 975--978, 1982{\natexlab{a}}.
+
+\bibitem[Deser et~al.(1982{\natexlab{b}})Deser, Jackiw, and
+  Templeton]{DeserJackiwTempleton1982b}
+S.~Deser, R.~Jackiw, and S.~Templeton.
+\newblock Topologically massive gauge theories.
+\newblock \emph{Ann. Phys.}, 140:\penalty0 372--411, 1982{\natexlab{b}}.
+
+\bibitem[Belavin et~al.(1975)Belavin, Polyakov, Schwartz, and
+  Tyupkin]{BPST1975}
+A.~A. Belavin, A.~M. Polyakov, A.~S. Schwartz, and Yu.~S. Tyupkin.
+\newblock Pseudoparticle solutions of the {Yang--Mills} equations.
+\newblock \emph{Phys. Lett. B}, 59:\penalty0 85--87, 1975.
+
+\bibitem['t~Hooft(1974)]{tHooft1974}
+G.~'t~Hooft.
+\newblock Magnetic monopoles in unified gauge theories.
+\newblock \emph{Nucl. Phys. B}, 79:\penalty0 276--284, 1974.
+
+\bibitem[Polyakov(1974)]{Polyakov1974}
+A.~M. Polyakov.
+\newblock Particle spectrum in quantum field theory.
+\newblock \emph{JETP Lett.}, 20:\penalty0 194--195, 1974.
+
+\bibitem[Prasad and Sommerfield(1975)]{PrasadSommerfield1975}
+M.~K. Prasad and Charles~M. Sommerfield.
+\newblock Exact classical solution for the 't {Hooft} monopole and the
+  {Julia--Zee} dyon.
+\newblock \emph{Phys. Rev. Lett.}, 35:\penalty0 760--762, 1975.
+
+\bibitem[Noether(1918)]{Noether1918}
+Emmy Noether.
+\newblock Invariante {V}ariationsprobleme.
+\newblock \emph{Nachr. Ges. Wiss. G{\"o}ttingen, Math.-Phys. Kl.}, pages
+  235--257, 1918.
+
+\end{thebibliography}

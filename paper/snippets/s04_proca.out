@@ -1,0 +1,6 @@
+3
+canonical pairs: 5
+first-class constraints: 2, second-class: 0
+physical degrees of freedom per point: 3
+  [primary, first-class]  p[A[0]](t, x, y, z) ~ 0
+  [secondary, first-class]  -m*p[theta](t, x, y, z) + Derivative(p[A[1]](t, x, y, z), x) + Derivative(p[A[2]](t, x, y, z), y) + Derivative(p[A[3]](t, x, y, z), z) ~ 0

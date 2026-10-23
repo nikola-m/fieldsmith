@@ -1,0 +1,15 @@
+\section{The \LaTeX{} subset}
+\label{app:grammar}
+
+The grammar accepted by the parser is, informally,
+\begingroup\small\begin{align*}
+\mathit{expr}&::=\mathit{term}\ (\,(\texttt{+}\,|\,\texttt{-})\ \mathit{term}\,)^*\\
+\mathit{term}&::=\mathit{factor}\ (\,(\texttt{*}\,|\,\texttt{\textbackslash cdot}\,|\,\texttt{\textbackslash times}\,|\,\texttt{/}\,|\,\text{implicit})\ \mathit{factor}\,)^*\\
+\mathit{factor}&::=(\texttt{-}\,|\,\texttt{+})\ \mathit{factor}\ |\ \mathit{postfix}\\
+\mathit{postfix}&::=\mathit{operator}^*\ \mathit{atom}\ (\,\texttt{\^{}}\mathit{exponent}\,|\,\texttt{\^{}\textbackslash dagger}\,|\,\texttt{\^{}*}\,|\,\texttt{!}\,)^*\\
+\mathit{operator}&::=\texttt{\textbackslash partial\_}\mu\ |\ \texttt{\textbackslash nabla\_}\mu\ |\ \texttt{\textbackslash Box}\ |\ \texttt{D\_}\mu\ |\ \texttt{\textbackslash bar}\ |\ \text{registered operator}\\
+\mathit{atom}&::=\text{number}\ |\ \texttt{\textbackslash frac\{..\}\{..\}}\ |\ \texttt{\textbackslash sqrt\{..\}}\ |\ \text{function}\texttt{(..)}\ |\ \texttt{(}\mathit{expr}\texttt{)}\ |\ \texttt{\{}\mathit{expr}\texttt{\}}\ |\ \mathit{symbol}\,[\text{indices}]
+\end{align*}\endgroup
+Supported functions: \texttt{\textbackslash sin, \textbackslash cos, \textbackslash tan, \textbackslash sinh, \textbackslash cosh, \textbackslash tanh, \textbackslash exp, \textbackslash ln, \textbackslash log, \textbackslash arcsin, \textbackslash arccos, \textbackslash arctan, \textbackslash sech, \textbackslash cot}. Spacing commands (\texttt{\textbackslash ,}, \texttt{\textbackslash ;}, \texttt{\textbackslash quad}, \dots) and \texttt{\textbackslash left}, \texttt{\textbackslash right}, \texttt{\textbackslash mathrm}, \texttt{\textbackslash mathbf}, \texttt{\textbackslash text}, \texttt{\textbackslash displaystyle} are ignored. Greek letters, accents (\texttt{\textbackslash tilde}, \texttt{\textbackslash hat}, \texttt{\textbackslash dot}) and primes are part of symbol names.
+
+\paragraph{Semantics.} (1) A repeated index label within a product is summed over its range. (2) An operator applies to the next \emph{postfix} item; use parentheses to widen the scope. (3) Superscripts on a symbol with a registered index structure are indices; otherwise they are powers. For example, in \verb|F^{\mu\nu}| the braces hold indices, in \verb|\phi^2| the 2 is a power; \verb|(F_{\mu\nu})^2| is the self-contraction $F_{\mu\nu}F^{\mu\nu}$. (4) Subscripts and superscripts that are single Greek letters or label letters are indices when the head symbol is a field or tensor; for parameters they are part of the name (e.g.\ \verb|m_a|, \verb|c_1|). (5) \verb|g| denotes the metric when followed by indices and the coupling parameter otherwise.

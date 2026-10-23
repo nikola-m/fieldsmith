@@ -1,0 +1,93 @@
+\section{Theoretical framework}
+\label{sec:framework}
+
+This section summarises the classical field theory that the library implements, in the form in which it is implemented. It is intended to make the paper self-contained; readers who know the material can skip to \cref{sec:impl}. The standard references are Landau and Lifshitz \cite{LandauLifshitz}, Weinberg \cite{WeinbergQFT1,WeinbergQFT2}, Peskin and Schroeder \cite{PeskinSchroeder} and, for constrained systems, Henneaux and Teitelboim \cite{HenneauxTeitelboim}.
+
+\subsection{Action principle and field equations}
+\label{sec:fw-el}
+
+A classical field theory is specified by a set of fields $\varphi_I(x)$ on a $d$-dimensional spacetime with coordinates $x^\mu$ and a Lagrangian density $\mathcal L$, a function of the fields and finitely many of their derivatives. The action is
+\begin{equation}
+S[\varphi]=\int\dd^dx\,\sqrt{|g|}\;\mathcal L\big(\varphi_I,\pd_\mu\varphi_I,\pd_\mu\pd_\nu\varphi_I,\dots\big),
+\label{eq:action}
+\end{equation}
+with $g=\det g_{\mu\nu}$ and $\sqrt{|g|}=1$ in Cartesian coordinates on Minkowski space. Stationarity under variations vanishing at the boundary gives the Euler--Lagrange (EL) equations
+\begin{equation}
+E_I\equiv\EL{\varphi_I}=\sum_{k\ge0}(-1)^k\,\pd_{\alpha_1}\!\cdots\pd_{\alpha_k}\frac{\pd\,(\sqrt{|g|}\mathcal L)}{\pd(\pd_{\alpha_1}\!\cdots\pd_{\alpha_k}\varphi_I)}\Big/\sqrt{|g|}=0,
+\label{eq:EL}
+\end{equation}
+where the derivative with respect to a symmetrised multi-derivative is understood to be shared equally among its orderings. We call $E_I$ the \emph{equation-of-motion expression} of the field $\varphi_I$; it is the quantity that vanishes on shell, and its overall sign is fixed by the convention in \cref{eq:EL}. For complex fields we treat $\phi$ and $\phi^*$ as independent, so $\delta S/\delta\phi^*$ is the equation of motion of $\phi$. The presence of derivatives of order $k>1$ in \cref{eq:EL} is what permits higher-derivative theories such as Podolsky's (\cref{ex:podolsky}).
+
+\subsection{Symmetries and Noether's theorem}
+\label{sec:fw-noether}
+
+Let $\varphi_I\to\varphi_I+\epsilon\,\delta\varphi_I$, with $\delta\varphi_I$ a local function of the fields and their derivatives. If the Lagrangian density changes by a total divergence, $\delta\mathcal L=\pd_\mu K^\mu$, the variation is a symmetry. For a first-order Lagrangian, the standard computation gives
+\begin{equation}
+\delta\mathcal L=\sum_IE_I\,\delta\varphi_I+\pd_\mu\Big(\sum_I\frac{\pd\mathcal L}{\pd(\pd_\mu\varphi_I)}\delta\varphi_I\Big).
+\label{eq:dL}
+\end{equation}
+Defining $J^\mu=\sum_I\frac{\pd\mathcal L}{\pd(\pd_\mu\varphi_I)}\delta\varphi_I-K^\mu$, we obtain the \emph{Noether identity}
+\begin{equation}
+\pd_\mu J^\mu+\sum_IE_I\,\delta\varphi_I\equiv0,
+\label{eq:noether-id}
+\end{equation}
+which holds \emph{off shell}, identically in the fields. On shell ($E_I=0$) the current is conserved, $\pd_\mu J^\mu=0$, and the charge $Q=\int\dd^{d-1}x\,J^0$ is constant in time. For Lagrangians depending on derivatives up to order $n$, \cref{eq:dL} acquires further integrations by parts and
+\begin{equation}
+J_0^\mu=\sum_{k=1}^{n}\sum_{j=0}^{k-1}(-1)^j\,\pd_{\nu_1}\!\!\cdots\pd_{\nu_j}\frac{\pd\mathcal L}{\pd(\pd_\mu\pd_{\nu_1}\!\cdots\pd_{\nu_j}\pd_{\beta_{j+1}}\!\cdots\pd_{\beta_k}\varphi_I)}\;\pd_{\beta_{j+1}}\!\!\cdots\pd_{\beta_k}\delta\varphi_I,\qquad J^\mu=J_0^\mu-K^\mu,
+\label{eq:Jhigher}
+\end{equation}
+which is exactly the expression the library evaluates (\cref{sec:noether}); \cref{eq:noether-id} remains valid and is used as an independent check.
+
+\paragraph{Spacetime symmetries.} For an infinitesimal coordinate change $x^\mu\to x^\mu+\epsilon\,\xi^\mu(x)$ under which the fields transform as scalars, the field variation is the transport term $\delta\varphi_I=-\xi^\mu\pd_\mu\varphi_I$ and the Lagrangian density transforms as $\delta\mathcal L=-\pd_\mu(\xi^\mu\mathcal L)$ when the symmetry is a symmetry of the action, i.e.\ $K^\mu=-\xi^\mu\mathcal L$. Translations $\xi^\mu=\delta^\mu_\nu$ give the canonical energy--momentum tensor, rotations and boosts give angular momentum and the boost charge, and the scale transformation $\xi^\mu=x^\mu$ with the appropriate field weights gives the dilatation current (\cref{ex:symmetries}).
+
+\subsection{Energy--momentum tensors}
+\label{sec:fw-T}
+
+Two tensors play a role. The \emph{canonical} (Noether) tensor, from translations, is
+\begin{equation}
+T^\mu{}_\nu=\sum_I\frac{\pd\mathcal L}{\pd(\pd_\mu\varphi_I)}\pd_\nu\varphi_I-\delta^\mu_\nu\mathcal L,
+\label{eq:Tcan}
+\end{equation}
+which is conserved on shell but in general neither symmetric nor gauge invariant. The \emph{Hilbert} (metric) tensor is obtained by varying the action with respect to the metric,
+\begin{equation}
+T_{\mu\nu}=\frac{2}{\sqrt{|g|}}\frac{\delta(\sqrt{|g|}\,\mathcal L)}{\delta g^{\mu\nu}}\qquad\text{(signature }(+,-,-,-)\text{)},
+\label{eq:Thilb}
+\end{equation}
+is symmetric by construction, and is gauge invariant when $\mathcal L$ is. The two differ by the Belinfante improvement, a term of the form $\pd_\lambda B^{\lambda\mu\nu}$ with $B$ antisymmetric in its first two indices, plus terms proportional to the equations of motion (\cref{ex:stress}). The difference matters physically: only the Hilbert tensor sources gravity.
+
+\subsection{Gauge symmetries, constraints and degrees of freedom}
+\label{sec:fw-dirac}
+
+A \emph{gauge} symmetry is a symmetry with parameters that are arbitrary functions of spacetime. By Noether's second theorem it implies identities among the field equations; for Maxwell theory $\pd_\nu(\pd_\mu F^{\mu\nu})\equiv0$ is the statement that the equation of motion does not determine all of $A_\mu$. In canonical language this appears as constraints.
+
+Given a Lagrangian that is at most quadratic in the velocities $\dot\varphi_I$, the canonical momenta are $\pi^I=\pd\mathcal L/\pd\dot\varphi_I$ and, when the Hessian $\pd^2\mathcal L/\pd\dot\varphi_I\pd\dot\varphi_J$ is regular, the Hamiltonian density is $\mathcal H=\pi^I\dot\varphi_I-\mathcal L$. The Poisson bracket of functionals is
+\begin{equation}
+\PB FG=\int\dd^{d-1}x\sum_I\Big(\frac{\delta F}{\delta\varphi_I}\frac{\delta G}{\delta\pi^I}-\frac{\delta F}{\delta\pi^I}\frac{\delta G}{\delta\varphi_I}\Big),
+\label{eq:PB}
+\end{equation}
+and functional derivatives involve spatial derivatives only. If the Hessian is singular, there are \emph{primary constraints} $\phi_a\weq0$ (here $\weq$ is Dirac's weak equality). The Dirac--Bergmann algorithm \cite{Dirac1950,HenneauxTeitelboim} demands that the constraints are preserved in time, $\dot\phi_a=\PB{\phi_a}{H_T}\weq0$ with $H_T=H_c+u^a\phi_a$. Each condition either determines a multiplier $u^a$, or produces a new (\emph{secondary}) constraint, or is trivially satisfied. The procedure is iterated until it closes. A constraint is \emph{first class} if its bracket with all constraints is weakly zero, and \emph{second class} otherwise. First-class constraints generate gauge transformations. If the phase space has $2N$ dimensions per spatial point, with $N_1$ first-class and $N_2$ second-class constraints, the number of physical degrees of freedom is
+\begin{equation}
+n_{\mathrm{dof}}=\tfrac12\big(2N-2N_1-N_2\big).
+\label{eq:dof}
+\end{equation}
+This is the count that the library returns. For Maxwell theory, $N=4$, $N_1=2$, $N_2=0$, so $n_{\mathrm{dof}}=2$; for Proca, $N=4$, $N_1=0$, $N_2=2$ gives $3$ (\cref{ex:maxwell,ex:proca}).
+
+\subsection{Linearised waves}
+\label{sec:fw-waves}
+
+To study small perturbations about a background $\bar\varphi_I$, write $\varphi_I=\bar\varphi_I+\epsilon\,\psi_I$ and expand the field equations to first order in $\epsilon$. For a homogeneous (constant-coefficient) linear system, the substitution of plane waves $\psi_I=a_I\,\ee^{-\ii(\omega t-\vect k\cdot\vect x)}$ gives a matrix equation $K_{IJ}(\omega,\vect k)\,a_J=0$. Non-trivial solutions require a vanishing determinant,
+\begin{equation}
+\det K(\omega,\vect k)=0,
+\label{eq:disp}
+\end{equation}
+which is the dispersion relation. In a gauge theory $K$ has null vectors for every $(\omega,\vect k)$ (pure-gauge polarisations), so $\det K\equiv0$; the physical modes are then the points where the rank of $K$ drops below its generic value $r$. These are common zeros of all $r\times r$ minors, which we compute as the greatest common divisor of the minors (\cref{sec:waves-impl}).
+
+\subsection{Gauge theory}
+\label{sec:fw-gauge}
+
+Let $T^a$ be Hermitian generators of a compact Lie algebra, $[T^a,T^b]=\ii f^{abc}T^c$, normalised for $\mathrm{SU}(N)$ by $\tr(T^aT^b)=\tfrac12\delta^{ab}$. A multiplet $\phi$ in a representation $R$ transforms as $\delta\phi=\ii\alpha^a(x)T^a_R\phi$. The covariant derivative and field strength
+\begin{equation}
+D_\mu=\pd_\mu-\ii gA_\mu^aT^a,\qquad F_{\mu\nu}^a=\pd_\mu A_\nu^a-\pd_\nu A_\mu^a+gf^{abc}A_\mu^bA_\nu^c,
+\label{eq:DF}
+\end{equation}
+transform covariantly if $\delta A_\mu^a=g^{-1}\pd_\mu\alpha^a+f^{abc}A_\mu^b\alpha^c$. The curvature is the commutator, $[D_\mu,D_\nu]=-\ii gF_{\mu\nu}^aT^a$, from which the Bianchi identity $D_\mu\dual F^{a\,\mu\nu}=0$ follows. The Yang--Mills Lagrangian $-\tfrac14F^a_{\mu\nu}F^{a\,\mu\nu}$ gives $D_\mu F^{a\,\mu\nu}=0$ (\cref{ex:ym}). When a scalar multiplet acquires a vacuum expectation value $\langle\phi\rangle=v$ breaking the gauge group, the kinetic term $(D_\mu\phi)^\dagger D^\mu\phi$ contains $\tfrac12M^2_{ab}A^a_\mu A^{b\,\mu}$ with $M^2_{ab}=g^2\,v^\dagger\{T^a,T^b\}v$; its eigenvalues are the squared masses of the vector bosons and its null vectors the unbroken directions (\cref{ex:higgs,ex:ew}).
