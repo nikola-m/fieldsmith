@@ -85,7 +85,7 @@ Every script in [`examples/`](examples) runs and asserts its physics (see [docs/
 * `D_\mu` is registered once a `GaugeTheory` exists; derivative operators act on the *next* factor
   (`\partial_\mu\phi^2` means `d(phi^2)`) -- use parentheses to be explicit.
 
-## Honest limitations
+## Limitations
 
 * **Component-based.** Fields are explicit functions of the coordinates, so cost grows with
   spacetime dimension and group size (SU(3) Yang-Mills has 1650 terms; SU(N>=4) gets slow).
@@ -108,7 +108,7 @@ fieldsmith/       spacetime, tensors, latex parser, model, variational, noether,
                   hamiltonian, waves, gauge, analysis, teaching, printing
 examples/         18 runnable, self-checking scripts (elementary -> research)
 docs/             guide.md  (API + LaTeX reference), teaching.md (course + exercises), gallery.md
-paper/            arXiv-ready LaTeX companion paper (theory background + all 18 examples), main.pdf
+paper/            LaTeX companion paper (theory background + all 18 examples), main.pdf
 tests/            unit tests + example runner
 ```
 
