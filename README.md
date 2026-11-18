@@ -110,6 +110,7 @@ examples/         18 runnable, self-checking scripts (elementary -> research)
 docs/             guide.md  (API + LaTeX reference), teaching.md (course + exercises), gallery.md
 paper/            LaTeX companion paper (theory background + all 18 examples), main.pdf
 tests/            unit tests + example runner
+benchmark/        A suite of benchmark tests comparing `fieldsmith` with `Alakazam` - an open-source abstract-index tensor package written in Julia
 ```
 
 See [docs/guide.md](docs/guide.md) to get started and [docs/teaching.md](docs/teaching.md) for a
