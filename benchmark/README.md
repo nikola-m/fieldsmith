@@ -40,7 +40,7 @@ Alakazam (https://arxiv.org/abs/2608.20452) is an open-source abstract-index ten
 
 ## Timing scenarios (compare.py)
 
-  |  |  |
+  | Scenario | Description |
   |:---- | ---- |
   | warm |     best of runs 2..5 of each task, all tasks in one process per tool|
   | first     | run 1 of each task in that process; for Julia it includes JIT compilation of whatever the task is first to use, so it depends on task order|
@@ -52,7 +52,7 @@ Alakazam (https://arxiv.org/abs/2608.20452) is an open-source abstract-index ten
 
 ## What runs on each side
 
-  |  |  |
+  | Code  | Description |
   |:---- | ---- |
  | fieldsmith   | Its own example code. Exception: the two stress-tensor tasks (Belinfante relation,improved trace) assemble the canonical tensor dL/d(d_mu f) d_nu f - delta L and the Hilbert tensor 2 dL/dg^{mu nu} - g_{mu nu} L by hand from derivatives fieldsmith computes, because that is all the Alakazam side can do (Alakazam has no sqrt(-g) object). fieldsmith's canonical_stress_tensor and hilbert_stress_tensor would do more work than the Julia side, so they are not used. |
   | Alakazam    | Alakazam plus about 100 lines of benchmark helper code in bench_alakazam.jl: zero_abs (tries Alakazam's simplify, hard_simplify and canonicalise), avary (first-order variation from Alakazam's VariationalDerivative), afit with cnum (covariant fit: matches the coefficients of Alakazam's canonical terms and solves the small linear system), fresh (unique dummy indices). The helpers are timed; they are not Alakazam features. |
